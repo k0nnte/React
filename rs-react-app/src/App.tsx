@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import Top from './top/top';
+import fsearch from './bottom/other/rfetch';
 
 class App extends React.Component {
   state = {
@@ -14,6 +15,7 @@ class App extends React.Component {
     }
     this.setState({ data: newData });
     localStorage.setItem('search', newData);
+    fsearch(newData);
   };
 
   render(): React.ReactNode {
