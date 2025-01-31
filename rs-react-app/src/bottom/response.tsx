@@ -9,6 +9,11 @@ class Response extends React.Component<ResponseProps> {
   state: ResponseState = {
     data: null,
     error: null,
+    errorband: false,
+  };
+
+  clickError = () => {
+    this.setState({ errorband: true });
   };
 
   async fetchData(search: string) {
@@ -33,27 +38,29 @@ class Response extends React.Component<ResponseProps> {
 
   render(): React.ReactNode {
     const { data, error } = this.state;
-    if (error) {
-      return (
-        <div className="response_other">
-          <p>Error: {error}</p>
-        </div>
-      );
-    }
-
-    if (!data) {
-      return (
-        <div className="response_other">
-          <Loading />
-        </div>
-      );
+    if (this.state.errorband) {
+      throw new Error('Error');
     }
     return (
-      <div className="response">
-        {data.map((person) => (
-          <Card key={person.name} {...person} />
-        ))}
-        <div className="error"></div>
+      <div className="response_wrapper">
+        {error ? (
+          <div className="response_other">
+            <p>Error: {error}</p>
+          </div>
+        ) : !data ? (
+          <div className="response_other">
+            <Loading />
+          </div>
+        ) : (
+          <div className="response">
+            {data.map((person) => (
+              <Card key={person.name} {...person} />
+            ))}
+          </div>
+        )}
+        <button className="error_btn" onClick={this.clickError}>
+          Error button
+        </button>
       </div>
     );
   }

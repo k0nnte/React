@@ -25,6 +25,7 @@ export interface IError {
 export interface ResponseState {
   data: Person[] | null;
   error: string | null;
+  errorband: boolean;
 }
 
 export interface ResponseProps {
@@ -37,4 +38,8 @@ export interface ICard {
   mass: string;
   hair_color: string;
   skin_color: string;
+}
+
+export interface ErrorBoundaryProps {
+  children: React.ReactNode;
 }
