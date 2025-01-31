@@ -3,6 +3,7 @@ import rfetch from '../other/rfetch';
 import { ResponseProps, ResponseState } from '../other/interfases';
 import Card from './card/card';
 import './response.css';
+import Loading from '../other/Loading/Loading';
 
 class Response extends React.Component<ResponseProps> {
   state: ResponseState = {
@@ -43,7 +44,7 @@ class Response extends React.Component<ResponseProps> {
     if (!data) {
       return (
         <div className="response_other">
-          <p>Loading...</p>
+          <Loading />
         </div>
       );
     }
@@ -52,6 +53,7 @@ class Response extends React.Component<ResponseProps> {
         {data.map((person) => (
           <Card key={person.name} {...person} />
         ))}
+        <div className="error"></div>
       </div>
     );
   }
