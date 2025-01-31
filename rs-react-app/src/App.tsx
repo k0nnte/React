@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import Top from './top/top';
-import fsearch from './bottom/other/rfetch';
+import Response from './bottom/response';
 
 class App extends React.Component {
   state = {
@@ -15,7 +15,6 @@ class App extends React.Component {
     }
     this.setState({ data: newData });
     localStorage.setItem('search', newData);
-    fsearch(newData);
   };
 
   render(): React.ReactNode {
@@ -25,7 +24,9 @@ class App extends React.Component {
           <div className="top">
             <Top search={this.state.data} onSearch={this.updateData} />
           </div>
-          <div className="bottom"></div>
+          <div className="bottom">
+            <Response search={this.state.data} />
+          </div>
         </div>
       </div>
     );

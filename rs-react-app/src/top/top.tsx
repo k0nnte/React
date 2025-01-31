@@ -1,10 +1,6 @@
 import React, { createRef } from 'react';
 import './top.css';
-
-interface TopProps {
-  search: string;
-  onSearch: (newData: string) => void;
-}
+import { TopProps } from '../other/interfases';
 
 class Top extends React.Component<TopProps> {
   inputref = createRef<HTMLInputElement>();
