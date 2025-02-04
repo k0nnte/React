@@ -1,18 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.css';
 import Top from './top/top';
 import Response from './bottom/response';
+import useLocalStorage from './other/localhook';
 
 const App: React.FC = () => {
-  const [data, setData] = useState(localStorage.getItem('search') || '');
+  const [data, setData] = useLocalStorage('search', '');
 
   const updateData = (newData: string) => {
-    const currentData = localStorage.getItem('search');
-    if (newData === currentData) {
+    if (newData === data) {
       return;
     }
     setData(newData);
-    localStorage.setItem('search', newData);
   };
   return (
     <div className="main">
