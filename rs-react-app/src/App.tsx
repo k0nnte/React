@@ -1,36 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Top from './top/top';
 import Response from './bottom/response';
 
-class App extends React.Component {
-  state = {
-    data: localStorage.getItem('search') || '',
-  };
+const App: React.FC = () => {
+  const [data, setData] = useState(localStorage.getItem('search') || '');
 
-  updateData = (newData: string) => {
+  const updateData = (newData: string) => {
     const currentData = localStorage.getItem('search');
     if (newData === currentData) {
       return;
     }
-    this.setState({ data: newData });
+    setData(newData);
     localStorage.setItem('search', newData);
   };
-
-  render(): React.ReactNode {
-    return (
-      <div className="main">
-        <div className="app">
-          <div className="top">
-            <Top search={this.state.data} onSearch={this.updateData} />
-          </div>
-          <div className="bottom">
-            <Response search={this.state.data} />
-          </div>
+  return (
+    <div className="main">
+      <div className="app">
+        <div className="top">
+          <Top search={data} onSearch={updateData} />
+        </div>
+        <div className="bottom">
+          <Response search={data} />
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default App;

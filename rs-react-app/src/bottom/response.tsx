@@ -1,69 +1,61 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import rfetch from '../other/rfetch';
-import { ResponseProps, ResponseState } from '../other/interfases';
+import { ResponseProps, Person } from '../other/interfases';
 import Card from './card/card';
 import './response.css';
 import Loading from '../other/Loading/Loading';
 
-class Response extends React.Component<ResponseProps> {
-  state: ResponseState = {
-    data: null,
-    error: null,
-    errorband: false,
+const Response: React.FC<ResponseProps> = ({ search }) => {
+  const [data, setData] = useState<Person[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [errorband, setErrorband] = useState(false);
+
+  const clickError = () => {
+    setErrorband(true);
   };
 
-  clickError = () => {
-    this.setState({ errorband: true });
-  };
-
-  async fetchData(search: string) {
+  const fetchData = async (search: string) => {
     const result = await rfetch(search);
     if ('error' in result) {
-      this.setState({ error: result.error, data: null });
+      setError(result.error);
+      setData(null);
     } else {
-      this.setState({ data: result.results, error: null });
+      setData(result.results);
+      setError(null);
     }
+  };
+
+  useEffect(() => {
+    setData(null);
+    fetchData(search);
+  }, [search]);
+
+  if (errorband) {
+    throw new Error('Error');
   }
 
-  async componentDidMount() {
-    this.fetchData(this.props.search);
-  }
-
-  async componentDidUpdate(prevProps: ResponseProps) {
-    if (prevProps.search !== this.props.search) {
-      this.setState({ data: null, error: null });
-      this.fetchData(this.props.search);
-    }
-  }
-
-  render(): React.ReactNode {
-    const { data, error } = this.state;
-    if (this.state.errorband) {
-      throw new Error('Error');
-    }
-    return (
-      <div className="response_wrapper">
-        {error ? (
-          <div className="response_other">
-            <p>Error: {error}</p>
-          </div>
-        ) : !data ? (
-          <div className="response_other">
-            <Loading />
-          </div>
-        ) : (
-          <div className="response">
-            {data.map((person) => (
-              <Card key={person.name} {...person} />
-            ))}
-          </div>
-        )}
-        <button className="error_btn" onClick={this.clickError}>
-          Error button
-        </button>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="response_wrapper">
+      {error ? (
+        <div className="response_other">
+          <p>Error: {error}</p>
+        </div>
+      ) : !data ? (
+        <div className="response_other">
+          <Loading />
+        </div>
+      ) : (
+        <div className="response">
+          {data.map((person) => (
+            <Card key={person.name} {...person} />
+          ))}
+        </div>
+      )}
+      <button className="error_btn" onClick={clickError}>
+        Error button
+      </button>
+    </div>
+  );
+};
 
 export default Response;
