@@ -3,6 +3,7 @@ import './App.css';
 import Top from './top/top';
 import Response from './bottom/response';
 import useLocalStorage from './other/localhook';
+import { Route, Routes } from 'react-router-dom';
 
 const App: React.FC = () => {
   const [data, setData] = useLocalStorage('search', '');
@@ -20,7 +21,10 @@ const App: React.FC = () => {
           <Top search={data} onSearch={updateData} />
         </div>
         <div className="bottom">
-          <Response search={data} />
+          <Routes>
+            <Route path="/" element={<Response search={data} />} />
+            {/* <Response search={data} /> */}
+          </Routes>
         </div>
       </div>
     </div>

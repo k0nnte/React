@@ -26,3 +26,22 @@
    margin-bottom: 5px;
    cursor: pointer;
 }
+
+.wrapper_pagination{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    
+}
+
+.btn_pagination{
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+    width: 50px;
+}
+.btn_pagination:disabled{
+    cursor: not-allowed;
+    background-color: #d3d3d3;
+}
