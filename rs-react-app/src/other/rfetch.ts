@@ -1,8 +1,8 @@
 import { IResponse, IError } from './interfases';
 
 async function rfetch(
-  search: string,
-  page: number
+  search?: string,
+  page?: number
 ): Promise<IResponse | IError> {
   const url = `https://swapi.dev/api/people/?search=${search}&page=${page}`;
   try {

@@ -4,7 +4,7 @@ import { ResponseProps, Person } from '../other/interfases';
 import Card from './card/card';
 import './response.css';
 import Loading from '../other/Loading/Loading';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, Outlet } from 'react-router-dom';
 
 const Response: React.FC<ResponseProps> = ({ search }) => {
   const itemInPage = 10;
@@ -15,7 +15,7 @@ const Response: React.FC<ResponseProps> = ({ search }) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const page = searchParams.get('page');
+  const page = searchParams.get('page') || '1';
   // const details = searchParams.get('details');
 
   const clickError = () => {
@@ -41,11 +41,6 @@ const Response: React.FC<ResponseProps> = ({ search }) => {
   const clicknext = () => {
     navigate(`?page=${Number(page) + 1}`);
   };
-
-  useEffect(() => {
-    navigate(`?page=1`);
-  }, [navigate, search]);
-
   useEffect(() => {
     setData(null);
     fetchData(search, page ? Number(page) : 1);
@@ -69,24 +64,33 @@ const Response: React.FC<ResponseProps> = ({ search }) => {
         </div>
       ) : (
         <div className="response">
-          {data.map((person) => (
-            <Card key={person.name} {...person} />
-          ))}
-          <div className="wrapper_pagination">
-            <button
-              className="btn_pagination"
-              onClick={clickprev}
-              disabled={Number(page) <= 1}
-            >
-              prev
-            </button>
-            <button
-              className="btn_pagination"
-              onClick={clicknext}
-              disabled={Number(page) >= totalPages}
-            >
-              next
-            </button>
+          <div className="response_left">
+            {data.map((person: Person, index: number) => (
+              <Card
+                key={person.name}
+                {...person}
+                id={`${Number(page) > 0 ? (Number(page) - 1) * itemInPage + index + 1 : index + 1}`}
+              />
+            ))}
+            <div className="wrapper_pagination">
+              <button
+                className="btn_pagination"
+                onClick={clickprev}
+                disabled={Number(page) <= 1}
+              >
+                prev
+              </button>
+              <button
+                className="btn_pagination"
+                onClick={clicknext}
+                disabled={Number(page) >= totalPages}
+              >
+                next
+              </button>
+            </div>
+          </div>
+          <div className="response_rigth">
+            <Outlet />
           </div>
         </div>
       )}
