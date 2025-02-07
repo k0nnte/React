@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "prepare": "cd .. &&  husky rs-react-app/.husky",
     "format:fix": "prettier --write .",
-    "test": "vitest"
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "react": "^18.3.1",
