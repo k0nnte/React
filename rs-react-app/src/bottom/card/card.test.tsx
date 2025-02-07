@@ -4,11 +4,6 @@ import '@testing-library/jest-dom';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
-// vi.mock('react-router-dom', () => ({
-//   useNavigate: () => mockNavigate,
-//   useSearchParams: () => [new URLSearchParams('')],
-// }));
-
 const card = {
   name: 'person 1',
   height: '180',

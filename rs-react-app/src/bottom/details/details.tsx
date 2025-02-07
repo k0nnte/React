@@ -11,12 +11,6 @@ const Details: React.FC = () => {
   const details = searchParams.get('details');
   const [rez, setRez] = useState<Irez | null>(null);
 
-  // const fetchData = async (id: string) => {
-  //   const result = await fetch(`https://swapi.dev/api/people/${id}/`);
-  //   const data = await result.json();
-  //   return data;
-  // };
-
   const click = () => {
     searchParams.delete('details');
     navigate(`/?${searchParams.toString()}`);
