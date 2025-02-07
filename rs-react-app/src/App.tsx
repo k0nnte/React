@@ -4,7 +4,7 @@ import Top from './top/top';
 import Response from './bottom/response';
 import useLocalStorage from './other/localhook';
 import { Route, Routes, useNavigate, useSearchParams } from 'react-router-dom';
-import NotFound from './other/404/404';
+import NotFound from './other/404/NotFound';
 import Details from './bottom/details/details';
 
 const App: React.FC = () => {

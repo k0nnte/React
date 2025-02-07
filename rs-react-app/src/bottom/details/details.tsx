@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Irez } from '../../other/interfases';
 import load from '../../assets/loadtwo.gif';
 import './details.css';
+import fetchData from '../../other/fetchData';
 
 const Details: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -10,11 +11,11 @@ const Details: React.FC = () => {
   const details = searchParams.get('details');
   const [rez, setRez] = useState<Irez | null>(null);
 
-  const fetchData = async (id: string) => {
-    const result = await fetch(`https://swapi.dev/api/people/${id}/`);
-    const data = await result.json();
-    return data;
-  };
+  // const fetchData = async (id: string) => {
+  //   const result = await fetch(`https://swapi.dev/api/people/${id}/`);
+  //   const data = await result.json();
+  //   return data;
+  // };
 
   const click = () => {
     searchParams.delete('details');

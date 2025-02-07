@@ -62,6 +62,10 @@ const Response: React.FC<ResponseProps> = ({ search }) => {
         <div className="response_other">
           <Loading />
         </div>
+      ) : data.length === 0 ? (
+        <div>
+          <p>Not Found</p>
+        </div>
       ) : (
         <div className="response">
           <div className="response_left">
