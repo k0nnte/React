@@ -126,4 +126,16 @@ describe('Response', () => {
       expect(mocknav).toHaveBeenCalledWith('?page=2');
     });
   });
+
+  test('error btn', () => {
+    render(
+      <BrowserRouter>
+        <Response search="" />
+      </BrowserRouter>
+    );
+    const errorButton = screen.getByText('Error button');
+    expect(() => {
+      fireEvent.click(errorButton);
+    }).toThrow('Error');
+  });
 });
