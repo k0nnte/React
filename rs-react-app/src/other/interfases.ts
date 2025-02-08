@@ -30,6 +30,7 @@ export interface ResponseState {
 
 export interface ResponseProps {
   search: string;
+  children?: React.ReactNode;
 }
 
 export interface ICard {
@@ -38,8 +39,16 @@ export interface ICard {
   mass: string;
   hair_color: string;
   skin_color: string;
+  id?: string;
 }
 
 export interface ErrorBoundaryProps {
   children: React.ReactNode;
+}
+
+export interface Irez extends ICard {
+  birth_year: string;
+  gender: string;
+  hair_color: string;
+  eye_color: string;
 }

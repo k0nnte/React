@@ -1,13 +1,17 @@
 import { IResponse, IError } from './interfases';
 
-async function rfetch(search: string): Promise<IResponse | IError> {
-  const url = 'https://swapi.dev/api/people/?search=' + search;
+async function rfetch(
+  search?: string,
+  page?: number
+): Promise<IResponse | IError> {
+  const url = `https://swapi.dev/api/people/?search=${search}&page=${page}`;
   try {
     const response = await fetch(url);
     if (!response.ok) {
       throw new Error('Error fetching data');
     }
     const data: IResponse = await response.json();
+
     return data;
   } catch (error) {
     console.error(error);
