@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import rfetch from '../other/rfetch';
+import React, { useState } from 'react';
+import { useFetchPeopleQuery } from '../other/rfetch';
 import { ResponseProps, Person } from '../other/interfases';
 import Card from './card/card';
 import './response.css';
@@ -8,31 +8,32 @@ import { useSearchParams, useNavigate, Outlet } from 'react-router-dom';
 
 const Response: React.FC<ResponseProps> = ({ search }) => {
   const itemInPage = 10;
-  const [data, setData] = useState<Person[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  // const [data, setData] = useState<Person[] | null>(null);
+  // const [error, setError] = useState<string | null>(null);
   const [errorband, setErrorband] = useState(false);
-  const [count, setCount] = useState<number>(0);
+  // const [count] = useState<number>(0);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const page = searchParams.get('page') || '1';
-  // const details = searchParams.get('details');
+  const page = Number(searchParams.get('page') || '1');
 
   const clickError = () => {
     setErrorband(true);
   };
 
-  const fetchData = async (search: string, pages: number) => {
-    const result = await rfetch(search, pages);
-    if ('error' in result) {
-      setError(result.error);
-      setData(null);
-    } else {
-      setCount(result.count);
-      setData(result.results);
-      setError(null);
-    }
-  };
+  const { data, error, isFetching } = useFetchPeopleQuery({ search, page });
+
+  // const fetchData = async (search: string, pages: number) => {
+  //   const result = await rfetch(search, pages);
+  //   if ('error' in result) {
+  //     setError(result.error);
+  //     setData(null);
+  //   } else {
+  //     setCount(result.count);
+  //     setData(result.results);
+  //     setError(null);
+  //   }
+  // };
 
   const clickprev = () => {
     navigate(`?page=${Number(page) - 1}`);
@@ -41,12 +42,12 @@ const Response: React.FC<ResponseProps> = ({ search }) => {
   const clicknext = () => {
     navigate(`?page=${Number(page) + 1}`);
   };
-  useEffect(() => {
-    setData(null);
-    fetchData(search, page ? Number(page) : 1);
-  }, [page, search]);
+  // useEffect(() => {
+  //   setData(null);
+  //   fetchData(search, page ? Number(page) : 1);
+  // }, [page, search]);
 
-  const totalPages = Math.ceil(count / itemInPage);
+  const totalPages = data ? Math.ceil(data.count / itemInPage) : 0;
 
   if (errorband) {
     throw new Error('Error');
@@ -56,20 +57,20 @@ const Response: React.FC<ResponseProps> = ({ search }) => {
     <div className="response_wrapper">
       {error ? (
         <div className="response_other">
-          <p>Error: {error}</p>
+          <p>Error: {error.toString()}</p>
         </div>
-      ) : !data ? (
+      ) : isFetching ? (
         <div className="response_other">
           <Loading />
         </div>
-      ) : data.length === 0 ? (
+      ) : data?.results.length === 0 ? (
         <div>
           <p>Not Found</p>
         </div>
       ) : (
         <div className="response">
           <div className="response_left">
-            {data.map((person: Person, index: number) => (
+            {data?.results.map((person: Person, index: number) => (
               <Card
                 key={person.name}
                 {...person}
