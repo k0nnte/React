@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { rfetch } from '../other/rfetch';
 import { fetchData } from '../other/fetchData';
+import searchSaveReducer from './searchSave';
 
 export const store = configureStore({
   reducer: {
     [rfetch.reducerPath]: rfetch.reducer,
     [fetchData.reducerPath]: fetchData.reducer,
+    searchSave: searchSaveReducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware().concat(

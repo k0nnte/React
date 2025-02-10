@@ -30,7 +30,6 @@ export interface ResponseState {
 
 export interface ResponseProps {
   search: string;
-  children?: React.ReactNode;
 }
 
 export interface ICard {

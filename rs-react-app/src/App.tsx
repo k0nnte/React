@@ -2,24 +2,24 @@ import React from 'react';
 import './App.css';
 import Top from './top/top';
 import Response from './bottom/response';
-import useLocalStorage from './other/localhook';
-import { Route, Routes, useNavigate, useSearchParams } from 'react-router-dom';
+// import useLocalStorage from './other/localhook';
+import { Route, Routes, useSearchParams } from 'react-router-dom';
 import NotFound from './other/404/NotFound';
 import Details from './bottom/details/details';
 
 const App: React.FC = () => {
-  const [data, setData] = useLocalStorage('search', '');
+  // const [data, setData] = useLocalStorage('search', '');
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  const updateData = (newData: string) => {
-    if (newData === data) {
-      return;
-    }
-    searchParams.delete('details');
-    navigate(`/?${searchParams.toString()}`);
-    setData(newData);
-  };
+  // const updateData = (newData: string) => {
+  //   if (newData === data) {
+  //     return;
+  //   }
+  //   searchParams.delete('details');
+  //   navigate(`/?${searchParams.toString()}`);
+  //   setData(newData);
+  // };
 
   const details = searchParams.get('details');
 
@@ -27,11 +27,11 @@ const App: React.FC = () => {
     <div className="main">
       <div className="app">
         <div className="top">
-          <Top search={data} onSearch={updateData} />
+          <Top />
         </div>
         <div className="bottom">
           <Routes>
-            <Route path="/" element={<Response search={data} />}>
+            <Route path="/" element={<Response />}>
               {details && <Route path="/" element={<Details />} />}
             </Route>
             <Route path="*" element={<NotFound />} />

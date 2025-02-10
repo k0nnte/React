@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { useFetchPeopleQuery } from '../other/rfetch';
-import { ResponseProps, Person } from '../other/interfases';
+import { Person } from '../other/interfases';
 import Card from './card/card';
 import './response.css';
 import Loading from '../other/Loading/Loading';
 import { useSearchParams, useNavigate, Outlet } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
-const Response: React.FC<ResponseProps> = ({ search }) => {
+const Response: React.FC = () => {
   const itemInPage = 10;
+  const search = useSelector((state: RootState) => state.searchSave.search);
   // const [data, setData] = useState<Person[] | null>(null);
   // const [error, setError] = useState<string | null>(null);
   const [errorband, setErrorband] = useState(false);
