@@ -11,7 +11,7 @@ const Card: React.FC<ICard> = (props) => {
   const [searchParams] = useSearchParams();
   const details = searchParams.get('details');
   const dispatch = useDispatch();
-  const checkId = useSelector((state: RootState) => state.checkSave.id);
+  const checkId = useSelector((state: RootState) => state.checkSave.person);
   const click = () => {
     if (details) {
       searchParams.delete('details');
@@ -26,9 +26,9 @@ const Card: React.FC<ICard> = (props) => {
   const clickCheck = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     if (target.checked) {
-      dispatch(add(Number(props.id)));
+      dispatch(add(props));
     } else {
-      dispatch(deleteItem(Number(props.id)));
+      dispatch(deleteItem(props));
     }
   };
   return (
@@ -44,7 +44,7 @@ const Card: React.FC<ICard> = (props) => {
         type="checkbox"
         onClick={(e) => e.stopPropagation()}
         onChange={clickCheck}
-        checked={checkId.includes(Number(props.id))}
+        checked={checkId.some((id) => id.id === props.id)}
       />
     </div>
   );

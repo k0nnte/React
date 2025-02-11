@@ -1,27 +1,31 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ICard } from '../other/interfases';
 
 interface Checked {
-  id: Array<number>;
+  person: Array<ICard>;
 }
 
 const initialState: Checked = {
-  id: [],
+  person: [],
 };
 
 const checkSlice = createSlice({
   name: 'check',
   initialState,
   reducers: {
-    add: (state, action: PayloadAction<number>) => {
-      if (!state.id.includes(action.payload)) {
-        state.id.push(action.payload);
+    add: (state, action: PayloadAction<ICard>) => {
+      if (!state.person.some((person) => person.id === action.payload.id)) {
+        state.person.push(action.payload);
       }
     },
-    deleteItem: (state, action: PayloadAction<number>) => {
-      state.id = state.id.filter((id) => id !== action.payload);
+    deleteItem: (state, action: PayloadAction<ICard>) => {
+      // state.id = state.id.filter((id) => id !== action.payload);
+      state.person = state.person.filter(
+        (pers) => pers.id !== action.payload.id
+      );
     },
     destroy: (state) => {
-      state.id = [];
+      state.person = [];
     },
   },
 });

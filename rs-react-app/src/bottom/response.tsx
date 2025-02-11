@@ -5,16 +5,17 @@ import Card from './card/card';
 import './response.css';
 import Loading from '../other/Loading/Loading';
 import { useSearchParams, useNavigate, Outlet } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
+import { destroy } from '../redux/checkSave';
+import { saveAs } from 'file-saver';
 
 const Response: React.FC = () => {
   const itemInPage = 10;
   const search = useSelector((state: RootState) => state.searchSave.search);
-  // const [data, setData] = useState<Person[] | null>(null);
-  // const [error, setError] = useState<string | null>(null);
+  const checkedId = useSelector((state: RootState) => state.checkSave.person);
+  const dispatch = useDispatch();
   const [errorband, setErrorband] = useState(false);
-  // const [count] = useState<number>(0);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -26,17 +27,15 @@ const Response: React.FC = () => {
 
   const { data, error, isFetching } = useFetchPeopleQuery({ search, page });
 
-  // const fetchData = async (search: string, pages: number) => {
-  //   const result = await rfetch(search, pages);
-  //   if ('error' in result) {
-  //     setError(result.error);
-  //     setData(null);
-  //   } else {
-  //     setCount(result.count);
-  //     setData(result.results);
-  //     setError(null);
-  //   }
-  // };
+  const deletBtn = () => {
+    dispatch(destroy());
+  };
+
+  const download = () => {
+    const strData = JSON.stringify(checkedId, null, 2);
+    const blob = new Blob([strData], { type: 'application/json' });
+    saveAs(blob, `${checkedId.length}_peoples.csv`);
+  };
 
   const clickprev = () => {
     navigate(`?page=${Number(page) - 1}`);
@@ -45,10 +44,6 @@ const Response: React.FC = () => {
   const clicknext = () => {
     navigate(`?page=${Number(page) + 1}`);
   };
-  // useEffect(() => {
-  //   setData(null);
-  //   fetchData(search, page ? Number(page) : 1);
-  // }, [page, search]);
 
   const totalPages = data ? Math.ceil(data.count / itemInPage) : 0;
 
@@ -106,6 +101,13 @@ const Response: React.FC = () => {
       <button className="error_btn" onClick={clickError}>
         Error button
       </button>
+      <div className={`checked_items ${checkedId.length > 0 ? 'visible' : ''}`}>
+        <p>{checkedId.length} items are selected</p>
+        <div className="wrapper_btn">
+          <button onClick={deletBtn}>Unselect all</button>
+          <button onClick={download}>Download</button>
+        </div>
+      </div>
     </div>
   );
 };
