@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { setSearch } from '../redux/searchSave';
 import useLocalStorage from '../other/localhook';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTheme } from '../other/context/useTheme';
 
 const Top: React.FC = () => {
   const [data, setData] = useLocalStorage('search', '');
@@ -11,13 +12,13 @@ const Top: React.FC = () => {
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
 
   const click = () => {
     if (inputref.current) {
       if (inputref.current.value.trim() === data) {
         return;
       }
-      // onSearch(inputref.current.value.trim());
       searchParams.delete('details');
       navigate(`/?${searchParams.toString()}`);
       dispatch(setSearch(inputref.current.value.trim()));
@@ -25,17 +26,30 @@ const Top: React.FC = () => {
     }
   };
 
+  const toggleTheme = () => {
+    setTheme(theme === 'white' ? 'dark' : 'white');
+  };
+
   return (
-    <div className="search_vrapper">
+    <div
+      className={theme === 'white' ? 'search_vrapper' : 'search_vrapper black'}
+    >
       <input
         type="text"
         className="input_search"
         defaultValue={data}
         ref={inputref}
       />
-      <button className="btn_search" onClick={click}>
+      <button
+        className={theme === 'white' ? 'btn_search' : 'btn_search black'}
+        onClick={click}
+      >
         Search
       </button>
+      <select className="theme_select" value={theme} onChange={toggleTheme}>
+        <option value="white">white</option>
+        <option value="dark">dark</option>
+      </select>
     </div>
   );
 };

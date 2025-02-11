@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { destroy } from '../redux/checkSave';
 import { saveAs } from 'file-saver';
+import { useTheme } from '../other/context/useTheme';
 
 const Response: React.FC = () => {
   const itemInPage = 10;
@@ -18,6 +19,7 @@ const Response: React.FC = () => {
   const [errorband, setErrorband] = useState(false);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { theme } = useTheme();
 
   const page = Number(searchParams.get('page') || '1');
 
@@ -101,7 +103,9 @@ const Response: React.FC = () => {
       <button className="error_btn" onClick={clickError}>
         Error button
       </button>
-      <div className={`checked_items ${checkedId.length > 0 ? 'visible' : ''}`}>
+      <div
+        className={`checked_items ${checkedId.length > 0 ? 'visible' : ''} ${theme === 'white' ? '' : 'black'}`}
+      >
         <p>{checkedId.length} items are selected</p>
         <div className="wrapper_btn">
           <button onClick={deletBtn}>Unselect all</button>

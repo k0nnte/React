@@ -51,3 +51,8 @@ export interface Irez extends ICard {
   hair_color: string;
   eye_color: string;
 }
+
+export interface ThemeContextType {
+  theme: string;
+  setTheme: (theme: string) => void;
+}

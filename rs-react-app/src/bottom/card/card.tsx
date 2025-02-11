@@ -5,6 +5,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { add, deleteItem } from '../../redux/checkSave';
 import { RootState } from '../../redux/store';
+import { useTheme } from '../../other/context/useTheme';
 
 const Card: React.FC<ICard> = (props) => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const Card: React.FC<ICard> = (props) => {
   const details = searchParams.get('details');
   const dispatch = useDispatch();
   const checkId = useSelector((state: RootState) => state.checkSave.person);
+  const { theme } = useTheme();
   const click = () => {
     if (details) {
       searchParams.delete('details');
@@ -32,7 +34,7 @@ const Card: React.FC<ICard> = (props) => {
     }
   };
   return (
-    <div className="card" onClick={click}>
+    <div className={theme === 'white' ? 'card' : 'card black'} onClick={click}>
       <p className="item">{props.name}</p>
       <div className="description">
         <p>Height: {props.height}</p>
