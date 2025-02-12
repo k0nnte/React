@@ -17,7 +17,7 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
   }
 
   clickReset = () => {
-    this.setState({ hasError: false });
+    this.setState({ hasError: false, error: null });
   };
 
   render() {

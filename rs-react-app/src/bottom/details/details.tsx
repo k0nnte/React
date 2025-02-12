@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-// import { Irez } from '../../other/interfases';
 import load from '../../assets/loadtwo.gif';
 import './details.css';
 import { useFetchPeopleQuery } from '../../other/fetchData';

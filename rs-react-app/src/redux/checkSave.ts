@@ -19,7 +19,6 @@ const checkSlice = createSlice({
       }
     },
     deleteItem: (state, action: PayloadAction<ICard>) => {
-      // state.id = state.id.filter((id) => id !== action.payload);
       state.person = state.person.filter(
         (pers) => pers.id !== action.payload.id
       );
