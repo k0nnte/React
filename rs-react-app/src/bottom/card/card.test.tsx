@@ -6,6 +6,8 @@ import { Provider } from 'react-redux';
 import { createStore } from '@reduxjs/toolkit';
 import { ThemeProvider } from '../../other/context/theme';
 import { add, deleteItem } from '../../redux/checkSave';
+import { useTheme } from '../../other/context/useTheme';
+import '@testing-library/jest-dom';
 
 const cardProps = {
   name: 'Luke Skywalker',
@@ -33,6 +35,10 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
+vi.mock('../../other/context/useTheme', () => ({
+  useTheme: vi.fn(),
+}));
+
 vi.mock(import('react-router-dom'), async (importOriginal) => {
   const actual = await importOriginal();
   return {
@@ -44,6 +50,8 @@ vi.mock(import('react-router-dom'), async (importOriginal) => {
 
 describe('test Card', () => {
   test('test clickbtn', () => {
+    const mockTheme = { theme: 'white', setTheme: vi.fn() };
+    vi.mocked(useTheme).mockReturnValue(mockTheme);
     const mockNavigate = vi.fn();
     const mockSetSearchParams = vi.fn();
     const mockSearchParams = new URLSearchParams();
@@ -67,6 +75,8 @@ describe('test Card', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/?details=1');
   });
   test('delete details', () => {
+    const mockTheme = { theme: 'white', setTheme: vi.fn() };
+    vi.mocked(useTheme).mockReturnValue(mockTheme);
     const mockNavigate = vi.fn();
     const mockSetSearchParams = vi.fn();
     const mockSearchParams = new URLSearchParams('?details=1');
@@ -88,6 +98,8 @@ describe('test Card', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/?');
   });
   test('checked', () => {
+    const mockTheme = { theme: 'white', setTheme: vi.fn() };
+    vi.mocked(useTheme).mockReturnValue(mockTheme);
     render(
       <Provider store={mockStore}>
         <ThemeProvider>
@@ -100,6 +112,8 @@ describe('test Card', () => {
     expect(mockDispatch).toHaveBeenCalledWith(add(cardProps));
   });
   test('delete item store', () => {
+    const mockTheme = { theme: 'white', setTheme: vi.fn() };
+    vi.mocked(useTheme).mockReturnValue(mockTheme);
     render(
       <Provider store={mockStore}>
         <ThemeProvider>
@@ -111,5 +125,17 @@ describe('test Card', () => {
     fireEvent.change(checkbox, { target: { checked: true } });
     fireEvent.click(checkbox);
     expect(mockDispatch).toHaveBeenCalledWith(deleteItem(cardProps));
+  });
+  test('class theme', () => {
+    const mockTheme = { theme: 'dark', setTheme: vi.fn() };
+    vi.mocked(useTheme).mockReturnValue(mockTheme);
+    render(
+      <Provider store={mockStore}>
+        <ThemeProvider>
+          <Card {...cardProps} />
+        </ThemeProvider>
+      </Provider>
+    );
+    expect(screen.getByTestId('card_test')).toHaveClass('card black');
   });
 });

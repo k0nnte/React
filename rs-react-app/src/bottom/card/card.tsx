@@ -34,7 +34,11 @@ const Card: React.FC<ICard> = (props) => {
     }
   };
   return (
-    <div className={theme === 'white' ? 'card' : 'card black'} onClick={click}>
+    <div
+      data-testid="card_test"
+      className={theme === 'white' ? 'card' : 'card black'}
+      onClick={click}
+    >
       <p className="item">{props.name}</p>
       <div className="description">
         <p>Height: {props.height}</p>

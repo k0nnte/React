@@ -23,7 +23,10 @@ const Details: React.FC = () => {
       {isFetching ? (
         <img className="loadtwo" src={load} alt="Loading..." />
       ) : (
-        <div className={theme === 'white' ? 'details' : 'details black'}>
+        <div
+          data-testid="div_test"
+          className={theme === 'white' ? 'details' : 'details black'}
+        >
           <p>name {data?.name}</p>
           <p>birth_year {data?.birth_year}</p>
           <p>Height: {data?.height}</p>
