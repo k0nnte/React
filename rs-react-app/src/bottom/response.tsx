@@ -1,37 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import rfetch from '../other/rfetch';
-import { ResponseProps, Person } from '../other/interfases';
+import React, { useState } from 'react';
+import { useFetchPeopleQuery } from '../other/rfetch';
+import { Person } from '../other/interfases';
 import Card from './card/card';
 import './response.css';
 import Loading from '../other/Loading/Loading';
 import { useSearchParams, useNavigate, Outlet } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
+import { destroy } from '../redux/checkSave';
+import { saveAs } from 'file-saver';
+import { useTheme } from '../other/context/useTheme';
 
-const Response: React.FC<ResponseProps> = ({ search }) => {
+const Response: React.FC = () => {
   const itemInPage = 10;
-  const [data, setData] = useState<Person[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const search = useSelector((state: RootState) => state.searchSave.search);
+  const checkedId = useSelector((state: RootState) => state.checkSave.person);
+  const dispatch = useDispatch();
   const [errorband, setErrorband] = useState(false);
-  const [count, setCount] = useState<number>(0);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { theme } = useTheme();
 
-  const page = searchParams.get('page') || '1';
-  // const details = searchParams.get('details');
+  const page = Number(searchParams.get('page') || '1');
 
   const clickError = () => {
     setErrorband(true);
   };
 
-  const fetchData = async (search: string, pages: number) => {
-    const result = await rfetch(search, pages);
-    if ('error' in result) {
-      setError(result.error);
-      setData(null);
-    } else {
-      setCount(result.count);
-      setData(result.results);
-      setError(null);
-    }
+  const { data, error, isFetching } = useFetchPeopleQuery({ search, page });
+
+  const deletBtn = () => {
+    dispatch(destroy());
+  };
+
+  const download = () => {
+    const strData = JSON.stringify(checkedId, null, 2);
+    const blob = new Blob([strData], { type: 'application/json' });
+    saveAs(blob, `${checkedId.length}_peoples.csv`);
   };
 
   const clickprev = () => {
@@ -41,12 +46,8 @@ const Response: React.FC<ResponseProps> = ({ search }) => {
   const clicknext = () => {
     navigate(`?page=${Number(page) + 1}`);
   };
-  useEffect(() => {
-    setData(null);
-    fetchData(search, page ? Number(page) : 1);
-  }, [page, search]);
 
-  const totalPages = Math.ceil(count / itemInPage);
+  const totalPages = data ? Math.ceil(data.count / itemInPage) : 0;
 
   if (errorband) {
     throw new Error('Error');
@@ -56,20 +57,20 @@ const Response: React.FC<ResponseProps> = ({ search }) => {
     <div className="response_wrapper">
       {error ? (
         <div className="response_other">
-          <p>Error: {error}</p>
+          <p>Error: {error.toString()}</p>
         </div>
-      ) : !data ? (
+      ) : isFetching ? (
         <div className="response_other">
           <Loading />
         </div>
-      ) : data.length === 0 ? (
+      ) : data?.results.length === 0 ? (
         <div>
           <p>Not Found</p>
         </div>
       ) : (
         <div className="response">
           <div className="response_left">
-            {data.map((person: Person, index: number) => (
+            {data?.results.map((person: Person, index: number) => (
               <Card
                 key={person.name}
                 {...person}
@@ -102,6 +103,15 @@ const Response: React.FC<ResponseProps> = ({ search }) => {
       <button className="error_btn" onClick={clickError}>
         Error button
       </button>
+      <div
+        className={`checked_items ${checkedId.length > 0 ? 'visible' : ''} ${theme === 'white' ? '' : 'black'}`}
+      >
+        <p>{checkedId.length} items are selected</p>
+        <div className="wrapper_btn">
+          <button onClick={deletBtn}>Unselect all</button>
+          <button onClick={download}>Download</button>
+        </div>
+      </div>
     </div>
   );
 };

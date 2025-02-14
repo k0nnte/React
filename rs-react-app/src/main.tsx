@@ -4,14 +4,20 @@ import './index.css';
 import App from './App';
 import ErrorBoundary from './other/Error/ErrorBoundary';
 import { BrowserRouter } from 'react-router-dom';
+import { store } from './redux/store';
+import { Provider } from 'react-redux';
+import { ThemeProvider } from './other/context/theme';
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById('root') as HTMLElement).render(
   <StrictMode>
-    <ErrorBoundary>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ErrorBoundary>
+    <ThemeProvider>
+      <Provider store={store}>
+        <ErrorBoundary>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </ErrorBoundary>
+      </Provider>
+    </ThemeProvider>
   </StrictMode>
 );

@@ -5,3 +5,6 @@
     justify-content: space-around;
     
 }
+input[type="checkbox"] {
+    cursor: pointer;
+  }

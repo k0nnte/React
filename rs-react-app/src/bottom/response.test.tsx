@@ -1,209 +1,285 @@
-import { describe, expect, Mock, test, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { describe, expect, test, vi } from 'vitest';
 import Response from './response';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
+import { MemoryRouter, useNavigate } from 'react-router-dom';
+import { ThemeProvider } from '../other/context/theme';
+import { destroy } from '../redux/checkSave';
+import { configureStore } from '@reduxjs/toolkit';
+import { useFetchPeopleQuery } from '../other/rfetch';
 import '@testing-library/jest-dom';
-import { BrowserRouter, useNavigate, useSearchParams } from 'react-router-dom';
-import rfetch from '../other/rfetch';
 
-vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual('react-router-dom');
+const dispatch = vi.fn();
+const saveas = vi.fn();
+vi.mock('react-redux', async () => {
+  const actual = await vi.importActual('react-redux');
   return {
     ...actual,
-    // useNavigate: () => mocknav,
-    // useSearchParams: () => [new URLSearchParams('?page=1')],
-    useNavigate: vi.fn(),
-    useSearchParams: vi.fn(),
+    useDispatch: () => dispatch,
   };
 });
-const mockData = {
-  count: 2,
-  results: [
-    {
-      id: 1,
-      name: 'Person 1',
-      height: '180',
-      mass: '75',
-      hair_color: 'black',
-      skin_color: 'white',
-    },
-    {
-      id: 2,
-      name: 'Person 2',
-      height: '170',
-      mass: '65',
-      hair_color: 'brown',
-      skin_color: 'tan',
-    },
-  ],
-};
 
-const mockMoreData = {
-  count: 15,
-  results: [
-    {
-      id: 1,
-      name: 'Person 1',
-      height: '180',
-      mass: '75',
-      hair_color: 'black',
-    },
-    {
-      id: 2,
-      name: 'Person 2',
-      height: '180',
-      mass: '75',
-      hair_color: 'black',
-    },
-    {
-      id: 3,
-      name: 'Person 3',
-      height: '180',
-      mass: '75',
-      hair_color: 'black',
-    },
-    {
-      id: 4,
-      name: 'Person 4',
-      height: '180',
-      mass: '75',
-      hair_color: 'black',
-    },
-    {
-      id: 5,
-      name: 'Person 5',
-      height: '180',
-      mass: '75',
-      hair_color: 'black',
-    },
-    {
-      id: 6,
-      name: 'Person 6',
-      height: '180',
-      mass: '75',
-      hair_color: 'black',
-    },
-  ],
-};
+vi.mock(import('../other/rfetch'), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    useFetchPeopleQuery: vi.fn(),
+  };
+});
 
-vi.mock('../other/rfetch');
+vi.mock(import('react-router-dom'), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    useNavigate: vi.fn(),
+  };
+});
 
-describe('Response', () => {
-  test('should render data', async () => {
-    const mockSetSearchParams = vi.fn();
-    const mockSearchParams = new URLSearchParams();
-    vi.mocked(useSearchParams).mockReturnValue([
-      mockSearchParams,
-      mockSetSearchParams,
-    ]);
-    (rfetch as Mock).mockResolvedValue(mockData);
-    render(
-      <BrowserRouter>
-        <Response search="" />
-      </BrowserRouter>
-    );
+vi.mock('file-saver', () => ({
+  saveAs: () => saveas,
+}));
 
-    await waitFor(() => {
-      expect(screen.getByText('Person 1')).toBeInTheDocument();
-      expect(screen.getByText('Person 2')).toBeInTheDocument();
+describe('test response', () => {
+  test('click error', () => {
+    const mockStore = configureStore({
+      reducer: (
+        state = {
+          checkSave: { person: [] },
+          searchSave: {
+            search: 'test',
+          },
+        }
+      ) => state,
     });
-  });
-  test('no data', async () => {
-    const mockSetSearchParams = vi.fn();
-    const mockSearchParams = new URLSearchParams();
-    vi.mocked(useSearchParams).mockReturnValue([
-      mockSearchParams,
-      mockSetSearchParams,
-    ]);
-    (rfetch as Mock).mockResolvedValue({ count: 0, results: [] });
+    const mockuseFetchPeopleQuery = {
+      data: null,
+      isFetching: false,
+      refetch: vi.fn(),
+    };
+    vi.mocked(useFetchPeopleQuery).mockReturnValue(mockuseFetchPeopleQuery);
     render(
-      <BrowserRouter>
-        <Response search="" />
-      </BrowserRouter>
+      <Provider store={mockStore}>
+        <ThemeProvider>
+          <MemoryRouter>
+            <Response />
+          </MemoryRouter>
+        </ThemeProvider>
+      </Provider>
     );
-
-    await waitFor(() => {
-      expect(screen.getByText('Not Found')).toBeInTheDocument();
-    });
-  });
-  test('Make sure the component updates URL query parameter when page changes', async () => {
-    const mockSetSearchParams = vi.fn();
-    const mockSearchParams = new URLSearchParams('?page=1');
-    vi.mocked(useSearchParams).mockReturnValue([
-      mockSearchParams,
-      mockSetSearchParams,
-    ]);
-    const mockNavigate = vi.fn();
-    vi.mocked(useNavigate).mockReturnValue(mockNavigate);
-    (rfetch as Mock).mockResolvedValue(mockMoreData);
-    render(
-      <BrowserRouter>
-        <Response search="" />
-      </BrowserRouter>
-    );
-
-    await waitFor(() => {
-      fireEvent.click(screen.getByText('next'));
-      expect(mockNavigate).toHaveBeenCalledWith('?page=2');
-    });
-  });
-
-  test('error btn', () => {
-    const mockSetSearchParams = vi.fn();
-    const mockSearchParams = new URLSearchParams();
-    vi.mocked(useSearchParams).mockReturnValue([
-      mockSearchParams,
-      mockSetSearchParams,
-    ]);
-    render(
-      <BrowserRouter>
-        <Response search="" />
-      </BrowserRouter>
-    );
-    const errorButton = screen.getByText('Error button');
     expect(() => {
-      fireEvent.click(errorButton);
-    }).toThrow('Error');
+      fireEvent.click(screen.getByText('Error button'));
+    }).toThrow();
   });
-  test('errorfetch', async () => {
-    const mockSetSearchParams = vi.fn();
-    const mockSearchParams = new URLSearchParams();
-    vi.mocked(useSearchParams).mockReturnValue([
-      mockSearchParams,
-      mockSetSearchParams,
-    ]);
-    (rfetch as Mock).mockResolvedValue({ error: 'Test error' });
-    render(
-      <BrowserRouter>
-        <Response search="" />
-      </BrowserRouter>
-    );
-    await waitFor(() => {
-      expect(screen.getByText('Error: Test error')).toBeInTheDocument();
-      expect(screen.queryByText('Loading')).not.toBeInTheDocument();
-      expect(screen.queryByText('Not Found')).not.toBeInTheDocument();
+  test('destroy btn', () => {
+    const mockStore = configureStore({
+      reducer: (
+        state = {
+          checkSave: { person: [] },
+          searchSave: {
+            search: 'test',
+          },
+        }
+      ) => state,
     });
+    const mockuseFetchPeopleQuery = {
+      data: null,
+      isFetching: false,
+      refetch: vi.fn(),
+    };
+    vi.mocked(useFetchPeopleQuery).mockReturnValue(mockuseFetchPeopleQuery);
+    render(
+      <Provider store={mockStore}>
+        <ThemeProvider>
+          <MemoryRouter>
+            <Response />
+          </MemoryRouter>
+        </ThemeProvider>
+      </Provider>
+    );
+    const unselectButton = screen.getByText('Unselect all');
+
+    fireEvent.click(unselectButton);
+    expect(dispatch).toHaveBeenCalledWith(destroy());
   });
-
-  test('click btn prev', async () => {
-    const mockSetSearchParams = vi.fn();
-    const mockSearchParams = new URLSearchParams('?page=2');
-    vi.mocked(useSearchParams).mockReturnValue([
-      mockSearchParams,
-      mockSetSearchParams,
-    ]);
-    const mockNavigate = vi.fn();
-    vi.mocked(useNavigate).mockReturnValue(mockNavigate);
-    (rfetch as Mock).mockResolvedValue(mockData);
-    render(
-      <BrowserRouter>
-        <Response search="" />
-      </BrowserRouter>
-    );
-    await waitFor(() => {
-      const prevButton = screen.getByText('prev');
-      fireEvent.click(prevButton);
-
-      expect(mockNavigate).toHaveBeenCalledWith('?page=1');
+  test('donload btn', () => {
+    const mockStore = configureStore({
+      reducer: (
+        state = {
+          checkSave: { person: [] },
+          searchSave: {
+            search: 'test',
+          },
+        }
+      ) => state,
     });
+    const mockuseFetchPeopleQuery = {
+      data: null,
+      isFetching: false,
+      refetch: vi.fn(),
+    };
+    vi.mocked(useFetchPeopleQuery).mockReturnValue(mockuseFetchPeopleQuery);
+    render(
+      <Provider store={mockStore}>
+        <ThemeProvider>
+          <MemoryRouter>
+            <Response />
+          </MemoryRouter>
+        </ThemeProvider>
+      </Provider>
+    );
+    const downloadButton = screen.getByText(/Download/i);
+    fireEvent.click(downloadButton);
+    expect(saveas).not.toHaveBeenCalled();
+  });
+  test('click next', () => {
+    const mockuseNavigate = vi.fn();
+    vi.mocked(useNavigate).mockReturnValue(mockuseNavigate);
+    const result = [
+      { id: 1, name: 'Test Person' },
+      { id: 2, name: 'Test Person' },
+      { id: 1, name: 'Test Person' },
+      { id: 3, name: 'Test Person' },
+      { id: 4, name: 'Test Person' },
+      { id: 5, name: 'Test Person' },
+      { id: 6, name: 'Test Person' },
+      { id: 7, name: 'Test Person' },
+      { id: 8, name: 'Test Person' },
+      { id: 9, name: 'Test Person' },
+      { id: 10, name: 'Test Person' },
+      { id: 11, name: 'Test Person' },
+    ];
+
+    const mockStore = configureStore({
+      reducer: (
+        state = {
+          checkSave: {
+            person: [],
+          },
+          searchSave: {
+            search: 'test',
+          },
+        }
+      ) => state,
+    });
+    const mockuseFetchPeopleQuery = {
+      data: {
+        results: result,
+      },
+      isFetching: false,
+      refetch: vi.fn(),
+    };
+    vi.mocked(useFetchPeopleQuery).mockReturnValue(mockuseFetchPeopleQuery);
+
+    render(
+      <Provider store={mockStore}>
+        <ThemeProvider>
+          <MemoryRouter>
+            <Response />
+          </MemoryRouter>
+        </ThemeProvider>
+      </Provider>
+    );
+    fireEvent.click(screen.getByText('next'));
+    expect(mockuseNavigate).toBeCalled();
+  });
+  test('not found', () => {
+    const mockStore = configureStore({
+      reducer: (
+        state = {
+          checkSave: {
+            person: [],
+          },
+          searchSave: {
+            search: 'test',
+          },
+        }
+      ) => state,
+    });
+    const mockuseFetchPeopleQuery = {
+      data: {
+        results: [],
+      },
+      isFetching: false,
+      refetch: vi.fn(),
+    };
+    vi.mocked(useFetchPeopleQuery).mockReturnValue(mockuseFetchPeopleQuery);
+
+    render(
+      <Provider store={mockStore}>
+        <ThemeProvider>
+          <MemoryRouter>
+            <Response />
+          </MemoryRouter>
+        </ThemeProvider>
+      </Provider>
+    );
+    expect(screen.getByText('Not Found')).toBeInTheDocument();
+  });
+  test('error response', () => {
+    const mockStore = configureStore({
+      reducer: (
+        state = {
+          checkSave: {
+            person: [],
+          },
+          searchSave: {
+            search: 'test',
+          },
+        }
+      ) => state,
+    });
+    const mockuseFetchPeopleQuery = {
+      data: {
+        results: [],
+      },
+      isFetching: false,
+      error: 'oops',
+      refetch: vi.fn(),
+    };
+    vi.mocked(useFetchPeopleQuery).mockReturnValue(mockuseFetchPeopleQuery);
+
+    render(
+      <Provider store={mockStore}>
+        <ThemeProvider>
+          <MemoryRouter>
+            <Response />
+          </MemoryRouter>
+        </ThemeProvider>
+      </Provider>
+    );
+    expect(screen.getByText('Error: oops')).toBeInTheDocument();
+  });
+  test('Loading', () => {
+    const mockStore = configureStore({
+      reducer: (
+        state = {
+          checkSave: {
+            person: [],
+          },
+          searchSave: {
+            search: 'test',
+          },
+        }
+      ) => state,
+    });
+    const mockuseFetchPeopleQuery = {
+      data: {
+        results: [],
+      },
+      isFetching: true,
+      refetch: vi.fn(),
+    };
+    vi.mocked(useFetchPeopleQuery).mockReturnValue(mockuseFetchPeopleQuery);
+
+    render(
+      <Provider store={mockStore}>
+        <ThemeProvider>
+          <MemoryRouter>
+            <Response />
+          </MemoryRouter>
+        </ThemeProvider>
+      </Provider>
+    );
+    expect(screen.getByAltText('Loading...')).toBeInTheDocument();
   });
 });

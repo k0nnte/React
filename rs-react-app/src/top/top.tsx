@@ -1,27 +1,53 @@
 import React, { createRef } from 'react';
 import './top.css';
-import { TopProps } from '../other/interfases';
+import { useDispatch } from 'react-redux';
+import { setSearch } from '../redux/searchSave';
+import useLocalStorage from '../other/localhook';
+import { useNavigate } from 'react-router-dom';
+import { useTheme } from '../other/context/useTheme';
 
-const Top: React.FC<TopProps> = ({ search, onSearch }) => {
+const Top: React.FC = () => {
+  const [data, setData] = useLocalStorage('search', '');
   const inputref = createRef<HTMLInputElement>();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
 
   const click = () => {
     if (inputref.current) {
-      onSearch(inputref.current.value.trim());
+      if (inputref.current.value.trim() === data) {
+        return;
+      }
+      navigate(`/`);
+      dispatch(setSearch(inputref.current.value.trim()));
+      setData(inputref.current.value.trim());
     }
   };
 
+  const toggleTheme = () => {
+    setTheme(theme === 'white' ? 'dark' : 'white');
+  };
+
   return (
-    <div className="search_vrapper">
+    <div
+      className={theme === 'white' ? 'search_vrapper' : 'search_vrapper black'}
+    >
       <input
         type="text"
         className="input_search"
-        defaultValue={search}
+        defaultValue={data}
         ref={inputref}
       />
-      <button className="btn_search" onClick={click}>
+      <button
+        className={theme === 'white' ? 'btn_search' : 'btn_search black'}
+        onClick={click}
+      >
         Search
       </button>
+      <select className="theme_select" value={theme} onChange={toggleTheme}>
+        <option value="white">white</option>
+        <option value="dark">dark</option>
+      </select>
     </div>
   );
 };

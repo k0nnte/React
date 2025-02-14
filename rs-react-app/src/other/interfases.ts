@@ -30,7 +30,6 @@ export interface ResponseState {
 
 export interface ResponseProps {
   search: string;
-  children?: React.ReactNode;
 }
 
 export interface ICard {
@@ -51,4 +50,9 @@ export interface Irez extends ICard {
   gender: string;
   hair_color: string;
   eye_color: string;
+}
+
+export interface ThemeContextType {
+  theme: string;
+  setTheme: (theme: string) => void;
 }

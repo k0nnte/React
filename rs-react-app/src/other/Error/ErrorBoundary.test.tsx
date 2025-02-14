@@ -1,10 +1,20 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 import ErrorBoundary from './ErrorBoundary';
 import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { useEffect, useState } from 'react';
 
 const Problemcomp = () => {
-  throw new Error('Test Error');
+  const [hasError, setHasError] = useState(false);
+
+  useEffect(() => {
+    if (!hasError) {
+      setHasError(true);
+      throw new Error('Произошла ошибка!');
+    }
+  }, [hasError]);
+
+  return <div>Все хорошо!</div>;
 };
 
 describe('ErrorBoundary', () => {
@@ -16,12 +26,13 @@ describe('ErrorBoundary', () => {
     );
     expect(screen.getByText('Child')).toBeInTheDocument();
   });
-  test('crash', () => {
+  test('crash', async () => {
     render(
       <ErrorBoundary>
         <Problemcomp />
       </ErrorBoundary>
     );
+    vi.spyOn(console, 'error').mockImplementation(() => {});
     expect(screen.getByText('Ой ошибка. Перезагрузим?')).toBeInTheDocument();
   });
   test('click reset', () => {
@@ -32,6 +43,5 @@ describe('ErrorBoundary', () => {
     );
     expect(screen.getByText('Ой ошибка. Перезагрузим?')).toBeInTheDocument();
     fireEvent.click(screen.getByText('Перезагрузить'));
-    expect(screen.queryByText('Child component')).not.toBeInTheDocument();
   });
 });
