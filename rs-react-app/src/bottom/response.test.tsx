@@ -96,9 +96,6 @@ describe('test response', () => {
         </ThemeProvider>
       </Provider>
     );
-    // const unselectButton = screen.getByRole('button', {
-    //   name: /unselect all/i,
-    // });
     const unselectButton = screen.getByText('Unselect all');
 
     fireEvent.click(unselectButton);

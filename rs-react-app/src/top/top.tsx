@@ -3,14 +3,13 @@ import './top.css';
 import { useDispatch } from 'react-redux';
 import { setSearch } from '../redux/searchSave';
 import useLocalStorage from '../other/localhook';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../other/context/useTheme';
 
 const Top: React.FC = () => {
   const [data, setData] = useLocalStorage('search', '');
   const inputref = createRef<HTMLInputElement>();
   const dispatch = useDispatch();
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
 
@@ -19,8 +18,7 @@ const Top: React.FC = () => {
       if (inputref.current.value.trim() === data) {
         return;
       }
-      searchParams.delete('details');
-      navigate(`/?${searchParams.toString()}`);
+      navigate(`/`);
       dispatch(setSearch(inputref.current.value.trim()));
       setData(inputref.current.value.trim());
     }
