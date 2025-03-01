@@ -1,15 +1,16 @@
+'use client';
 import React, { useState } from 'react';
 import { useFetchPeopleQuery } from '../other/rfetch';
 import { Person } from '../other/interfases';
 import Card from './card/card';
 import './response.css';
 import Loading from '../other/Loading/Loading';
-import { useSearchParams, useNavigate, Outlet } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { destroy } from '../redux/checkSave';
 import { saveAs } from 'file-saver';
 import { useTheme } from '../other/context/useTheme';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const Response: React.FC = () => {
   const itemInPage = 10;
@@ -17,8 +18,8 @@ const Response: React.FC = () => {
   const checkedId = useSelector((state: RootState) => state.checkSave.person);
   const dispatch = useDispatch();
   const [errorband, setErrorband] = useState(false);
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const navigate = useRouter();
+  const searchParams = useSearchParams();
   const { theme } = useTheme();
 
   const page = Number(searchParams.get('page') || '1');
@@ -40,11 +41,11 @@ const Response: React.FC = () => {
   };
 
   const clickprev = () => {
-    navigate(`?page=${Number(page) - 1}`);
+    navigate.push(`?page=${Number(page) - 1}`);
   };
 
   const clicknext = () => {
-    navigate(`?page=${Number(page) + 1}`);
+    navigate.push(`?page=${Number(page) + 1}`);
   };
 
   const totalPages = data ? Math.ceil(data.count / itemInPage) : 0;
@@ -94,9 +95,7 @@ const Response: React.FC = () => {
               </button>
             </div>
           </div>
-          <div className="response_rigth">
-            <Outlet />
-          </div>
+          <div className="response_rigth">{/* <Outlet /> */}</div>
         </div>
       )}
 

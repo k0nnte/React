@@ -1,28 +1,26 @@
+'use client';
 import React from 'react';
 import { ICard } from '../../other/interfases';
 import './card.css';
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { add, deleteItem } from '../../redux/checkSave';
 import { RootState } from '../../redux/store';
 import { useTheme } from '../../other/context/useTheme';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 
 const Card: React.FC<ICard> = (props) => {
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const details = searchParams.get('details');
+  const navigate = useRouter();
+  const searchParams = useSearchParams();
   const dispatch = useDispatch();
   const checkId = useSelector((state: RootState) => state.checkSave.person);
   const { theme } = useTheme();
+  const { id } = useParams();
   const click = () => {
-    if (details) {
-      searchParams.delete('details');
+    if (props.id !== undefined && id === undefined) {
+      navigate.push(`/${props.id}/?${searchParams}`);
     } else {
-      if (props.id !== undefined) {
-        searchParams.set('details', props.id.toString());
-      }
+      navigate.push(`/?${searchParams}`);
     }
-    navigate(`/?${searchParams.toString()}`);
   };
 
   const clickCheck = (e: React.ChangeEvent<HTMLInputElement>) => {

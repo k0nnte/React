@@ -1,26 +1,43 @@
+'use client';
 import React from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import load from '../../src/assets/load.gif';
 import './details.css';
-import { useFetchPeopleQuery } from '../../other/fetchData';
-import { useTheme } from '../../other/context/useTheme';
+import { useFetchPeopleQuery } from '../../src/other/fetchData';
+import { useTheme } from '../../src/other/context/useTheme';
+import {
+  useRouter,
+  useParams,
+  useSearchParams,
+  notFound,
+} from 'next/navigation';
+import Image from 'next/image';
 
 const Details: React.FC = () => {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const details = searchParams.get('details');
+  const navigate = useRouter();
   const { theme } = useTheme();
-  const { data, isFetching } = useFetchPeopleQuery({
-    id: Number(details),
+  const searchParams = useSearchParams();
+  const { id } = useParams();
+  const { data, isFetching, isError } = useFetchPeopleQuery({
+    id: Number(id),
   });
 
   const click = () => {
-    searchParams.delete('details');
-    navigate(`/?${searchParams.toString()}`);
+    navigate.push(`/?${searchParams.toString()}`);
   };
+
+  if (isError) {
+    notFound();
+  }
   return (
     <>
       {isFetching ? (
-        <img className="loadtwo" src="q" alt="Loading..." />
+        <Image
+          className="loadtwo"
+          src={load}
+          alt="Loading..."
+          width={500}
+          height={500}
+        />
       ) : (
         <div
           data-testid="div_test"

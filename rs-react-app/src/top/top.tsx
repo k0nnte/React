@@ -4,7 +4,6 @@ import './top.css';
 import { useDispatch } from 'react-redux';
 import { setSearch } from '../redux/searchSave';
 import useLocalStorage from '../other/localhook';
-// import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../other/context/useTheme';
 import { useRouter } from 'next/navigation';
 
