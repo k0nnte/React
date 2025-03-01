@@ -1,16 +1,18 @@
+'use client';
 import React, { createRef } from 'react';
 import './top.css';
 import { useDispatch } from 'react-redux';
 import { setSearch } from '../redux/searchSave';
 import useLocalStorage from '../other/localhook';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../other/context/useTheme';
+import { useRouter } from 'next/navigation';
 
 const Top: React.FC = () => {
   const [data, setData] = useLocalStorage('search', '');
   const inputref = createRef<HTMLInputElement>();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate = useRouter();
   const { theme, setTheme } = useTheme();
 
   const click = () => {
@@ -18,7 +20,7 @@ const Top: React.FC = () => {
       if (inputref.current.value.trim() === data) {
         return;
       }
-      navigate(`/`);
+      navigate.push(`/`);
       dispatch(setSearch(inputref.current.value.trim()));
       setData(inputref.current.value.trim());
     }
