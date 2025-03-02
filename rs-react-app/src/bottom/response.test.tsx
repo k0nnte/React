@@ -2,7 +2,6 @@ import { describe, expect, test, vi } from 'vitest';
 import Response from './response';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
-// import { MemoryRouter, useNavigate } from 'react-router-dom';
 import { ThemeProvider } from '../other/context/theme';
 import { destroy } from '../redux/checkSave';
 import { configureStore } from '@reduxjs/toolkit';
@@ -64,7 +63,6 @@ describe('test response', () => {
     };
     const mockGet = vi.fn().mockReturnValue('1');
     const mockHas = vi.fn().mockReturnValue(true);
-    // const mockPush = vi.fn();
     const mockSearchParams = {
       get: mockGet,
       has: mockHas,

@@ -13,7 +13,7 @@ interface ImageProps {
 vi.mock('next/image', () => ({
   default: ({ src, alt, width, height }: ImageProps) => (
     <img
-      src={typeof src === 'object' ? src.src : src} // Обработка случая, если src - объект
+      src={typeof src === 'object' ? src.src : src}
       alt={alt}
       width={width}
       height={height}
