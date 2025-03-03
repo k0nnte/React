@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import Details from '../[id]/page';
+import Details from './datails';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { ThemeProvider } from '../../src/other/context/theme';
 import { configureStore } from '@reduxjs/toolkit';

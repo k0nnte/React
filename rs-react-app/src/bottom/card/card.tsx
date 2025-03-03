@@ -6,20 +6,28 @@ import { useDispatch, useSelector } from 'react-redux';
 import { add, deleteItem } from '../../redux/checkSave';
 import { RootState } from '../../redux/store';
 import { useTheme } from '../../other/context/useTheme';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
 
 const Card: React.FC<ICard> = (props) => {
   const navigate = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = navigate.query.page;
   const dispatch = useDispatch();
   const checkId = useSelector((state: RootState) => state.checkSave.person);
   const { theme } = useTheme();
-  const { id } = useParams();
+  const { id } = navigate.query;
   const click = () => {
     if (props.id !== undefined && id === undefined) {
-      navigate.push(`/${props.id}/?${searchParams}`);
+      if (searchParams) {
+        navigate.push(`/${props.id}/?page=${searchParams}`);
+      } else {
+        navigate.push(`/${props.id}/?`);
+      }
     } else {
-      navigate.push(`/?${searchParams}`);
+      if (searchParams) {
+        navigate.push(`/?page=${searchParams}`);
+      } else {
+        navigate.push(`/?`);
+      }
     }
   };
 

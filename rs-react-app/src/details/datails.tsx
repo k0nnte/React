@@ -2,32 +2,31 @@
 import React from 'react';
 import load from '../../src/assets/load.gif';
 import './details.css';
-import { useFetchPeopleQuery } from '../../src/other/fetchData';
-import { useTheme } from '../../src/other/context/useTheme';
-import {
-  useRouter,
-  useParams,
-  useSearchParams,
-  notFound,
-} from 'next/navigation';
+import { useFetchPeopleQuery } from '../other/fetchData';
+import { useTheme } from '../other/context/useTheme';
+import { useRouter } from 'next/router';
 import Image from 'next/image';
+import NotFound from '@/pages/404';
 
 const Details: React.FC = () => {
   const navigate = useRouter();
   const { theme } = useTheme();
-  const searchParams = useSearchParams();
-  const { id } = useParams();
+  const searchParams = navigate.query.page;
+
+  const { id } = navigate.query;
   const { data, isFetching, isError } = useFetchPeopleQuery({
     id: Number(id),
   });
+  console.log(isError);
 
   const click = () => {
-    navigate.push(`/?${searchParams.toString()}`);
+    if (searchParams) {
+      navigate.push(`/?page=${searchParams.toString()}`);
+    } else {
+      navigate.push('/?');
+    }
   };
 
-  if (isError) {
-    notFound();
-  }
   return (
     <>
       {isFetching ? (
@@ -38,6 +37,8 @@ const Details: React.FC = () => {
           width={500}
           height={500}
         />
+      ) : isError ? (
+        <NotFound />
       ) : (
         <div
           data-testid="div_test"

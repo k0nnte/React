@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { setSearch } from '../redux/searchSave';
 import useLocalStorage from '../other/localhook';
 import { useTheme } from '../other/context/useTheme';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 
 const Top: React.FC = () => {
   const [data, setData] = useLocalStorage('search', '');

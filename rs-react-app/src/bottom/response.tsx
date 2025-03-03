@@ -10,7 +10,7 @@ import { RootState } from '../redux/store';
 import { destroy } from '../redux/checkSave';
 import { saveAs } from 'file-saver';
 import { useTheme } from '../other/context/useTheme';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/router';
 
 const Response: React.FC = () => {
   const itemInPage = 10;
@@ -19,10 +19,10 @@ const Response: React.FC = () => {
   const dispatch = useDispatch();
   const [errorband, setErrorband] = useState(false);
   const navigate = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = navigate.query.page;
   const { theme } = useTheme();
 
-  const page = Number(searchParams.get('page') || '1');
+  const page = Number(searchParams || '1');
 
   const clickError = () => {
     setErrorband(true);
@@ -41,11 +41,11 @@ const Response: React.FC = () => {
   };
 
   const clickprev = () => {
-    navigate.push(`?page=${Number(page) - 1}`);
+    navigate.push(`/?page=${Number(page) - 1}`);
   };
 
   const clicknext = () => {
-    navigate.push(`?page=${Number(page) + 1}`);
+    navigate.push(`/?page=${Number(page) + 1}`);
   };
 
   const totalPages = data ? Math.ceil(data.count / itemInPage) : 0;
@@ -95,7 +95,6 @@ const Response: React.FC = () => {
               </button>
             </div>
           </div>
-          <div className="response_rigth">{/* <Outlet /> */}</div>
         </div>
       )}
 
