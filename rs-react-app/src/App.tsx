@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import style from './App.module.css';
 import Top from './top/top';
 import Response from './bottom/response';
 import { useTheme } from './other/context/useTheme';
@@ -12,12 +12,12 @@ const App: React.FC<AppProps> = ({ children }) => {
   const { theme } = useTheme();
 
   return (
-    <main className={theme === 'white' ? 'main' : 'main black'}>
-      <div className="app">
-        <div className="top">
+    <main className={theme === 'white' ? style.main : `${style.main} black`}>
+      <div className={style.app}>
+        <div className={style.top}>
           <Top />
         </div>
-        <div className="bottom">
+        <div className={style.bottom}>
           <Response />
           {children}
         </div>

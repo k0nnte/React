@@ -1,4 +1,4 @@
-import { describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import Card from './card';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
@@ -7,12 +7,7 @@ import { ThemeProvider } from '../../other/context/theme';
 import { add, deleteItem } from '../../redux/checkSave';
 import { useTheme } from '../../other/context/useTheme';
 import '@testing-library/jest-dom';
-import {
-  ReadonlyURLSearchParams,
-  useParams,
-  useRouter,
-  useSearchParams,
-} from 'next/navigation';
+import { useRouter } from 'next/router';
 
 const cardProps = {
   name: 'Luke Skywalker',
@@ -36,38 +31,30 @@ vi.mock('../../other/context/useTheme', () => ({
   useTheme: vi.fn(),
 }));
 
-vi.mock('next/navigation', () => ({
-  useRouter: vi.fn((): { push: (path: string) => void } => ({
-    push: vi.fn(),
+// vi.mock('next/navigation', () => ({
+//   useRouter: vi.fn((): { push: (path: string) => void } => ({
+//     push: vi.fn(),
+//   })),
+//   useSearchParams: vi.fn(),
+//   useParams: vi.fn(),
+// }));
+const mockpush = vi.fn();
+vi.mock('next/router', () => ({
+  useRouter: vi.fn(() => ({
+    query: { page: '1' },
+    push: mockpush,
+    pathname: '/',
+    isReady: true,
   })),
-  useSearchParams: vi.fn(),
-  useParams: vi.fn(),
 }));
 
 describe('test Card', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
   test('test clickbtn', () => {
     const mockTheme = { theme: 'white', setTheme: vi.fn() };
     vi.mocked(useTheme).mockReturnValue(mockTheme);
-    const mockGet = vi.fn().mockReturnValue('1');
-    const mockHas = vi.fn().mockReturnValue(true);
-    const mockPush = vi.fn();
-    const mockSearchParams = {
-      get: mockGet,
-      has: mockHas,
-      toString: vi.fn(() => 'page=1'),
-    } as unknown as ReadonlyURLSearchParams;
-
-    vi.mocked(useRouter).mockReturnValue({
-      push: mockPush,
-      back: vi.fn(),
-      forward: vi.fn(),
-      refresh: vi.fn(),
-      replace: vi.fn(),
-      prefetch: vi.fn(),
-    });
-
-    vi.mocked(useSearchParams).mockReturnValue(mockSearchParams);
-    vi.mocked(useParams).mockReturnValue({});
     vi.mocked(useTheme).mockReturnValue(mockTheme);
 
     render(
@@ -80,34 +67,37 @@ describe('test Card', () => {
 
     const cardElement = screen.getByText(/Luke Skywalker/i);
     cardElement.click();
-    expect(mockPush).toHaveBeenCalledWith('/1/?page=1');
+    expect(mockpush).toHaveBeenCalledWith('/1/?page=1');
   });
 
   test('delete details', () => {
     const mockTheme = { theme: 'white', setTheme: vi.fn() };
     vi.mocked(useTheme).mockReturnValue(mockTheme);
-    const mockGet = vi.fn().mockReturnValue('1');
-    const mockHas = vi.fn().mockReturnValue(true);
-    const mockPush = vi.fn();
-    const mockSearchParams = {
-      get: mockGet,
-      has: mockHas,
-      toString: vi.fn(() => ''),
-    } as unknown as ReadonlyURLSearchParams;
-
     vi.mocked(useRouter).mockReturnValue({
-      push: mockPush,
-      back: vi.fn(),
-      forward: vi.fn(),
-      refresh: vi.fn(),
+      route: '/1',
+      pathname: '/1',
+      query: { id: '1' },
+      asPath: '/1?page=1',
+      push: mockpush,
       replace: vi.fn(),
+      reload: vi.fn(),
+      back: vi.fn(),
       prefetch: vi.fn(),
+      beforePopState: vi.fn(),
+      events: {
+        on: vi.fn(),
+        off: vi.fn(),
+        emit: vi.fn(),
+      },
+      isFallback: false,
+      isReady: true,
+      basePath: '',
+      isLocaleDomain: false,
+      forward: function (): void {
+        throw new Error('Function not implemented.');
+      },
+      isPreview: false,
     });
-
-    vi.mocked(useSearchParams).mockReturnValue(mockSearchParams);
-    vi.mocked(useParams).mockReturnValue({ id: '1' });
-    vi.mocked(useTheme).mockReturnValue(mockTheme);
-
     render(
       <Provider store={mockStore}>
         <ThemeProvider>
@@ -117,7 +107,7 @@ describe('test Card', () => {
     );
     const cardElement = screen.getByText(/Luke Skywalker/i);
     cardElement.click();
-    expect(mockPush).toHaveBeenCalledWith('/?');
+    expect(mockpush).toHaveBeenCalledWith('/?');
   });
   test('checked', () => {
     const mockTheme = { theme: 'white', setTheme: vi.fn() };
@@ -158,6 +148,6 @@ describe('test Card', () => {
         </ThemeProvider>
       </Provider>
     );
-    expect(screen.getByTestId('card_test')).toHaveClass('card black');
+    expect(screen.getByTestId('card_test')).toHaveClass('black');
   });
 });

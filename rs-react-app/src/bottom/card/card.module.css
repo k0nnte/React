@@ -5,6 +5,6 @@
     justify-content: space-around;
     
 }
-input[type="checkbox"] {
+.ckeckBox {
     cursor: pointer;
   }

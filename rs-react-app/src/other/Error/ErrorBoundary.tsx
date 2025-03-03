@@ -1,6 +1,6 @@
 import React from 'react';
 import { ErrorBoundaryProps } from '../interfases';
-import './ErrorBoundary.css';
+import './ErrorBoundary.module.css';
 
 class ErrorBoundary extends React.Component<ErrorBoundaryProps> {
   state: { hasError: boolean; error: Error | null } = {

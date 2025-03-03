@@ -1,8 +1,12 @@
 import React from 'react';
-import '../src/other/404/NotFound.css';
+import style from '../src/other/404/NotFound.module.css';
 
 const NotFound: React.FC = () => {
-  return <div className="errorPage">404 Page Not Found</div>;
+  return (
+    <div className={style.errorPage} data-testid="errorpage">
+      404 Page Not Found
+    </div>
+  );
 };
 
 export default NotFound;

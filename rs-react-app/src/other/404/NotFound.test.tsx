@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import NotFound from '../../../app/not-found';
+import NotFound from '../../../pages/404';
 
 describe('NotFound component', () => {
   test('renders the 404 message', () => {
@@ -13,8 +13,7 @@ describe('NotFound component', () => {
 
   test('has the correct CSS class', () => {
     render(<NotFound />);
-    screen.debug();
-    const messageElement = screen.getByText('404 Page Not Found');
-    expect(messageElement).toHaveClass('errorPage');
+    const messageElement = screen.getByTestId('errorpage');
+    expect(messageElement).toHaveTextContent('404 Page Not Found');
   });
 });

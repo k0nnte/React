@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useFetchPeopleQuery } from '../other/rfetch';
 import { Person } from '../other/interfases';
 import Card from './card/card';
-import './response.css';
+import style from './response.module.css';
 import Loading from '../other/Loading/Loading';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
@@ -55,13 +55,13 @@ const Response: React.FC = () => {
   }
 
   return (
-    <div className="response_wrapper">
+    <div className={style.response_wrapper}>
       {error ? (
-        <div className="response_other">
+        <div className={style.response_other}>
           <p>Error: {error.toString()}</p>
         </div>
       ) : isFetching ? (
-        <div className="response_other">
+        <div className={style.response_other}>
           <Loading />
         </div>
       ) : data?.results.length === 0 ? (
@@ -69,8 +69,8 @@ const Response: React.FC = () => {
           <p>Not Found</p>
         </div>
       ) : (
-        <div className="response">
-          <div className="response_left">
+        <div className={style.response}>
+          <div className={style.response_left}>
             {data?.results.map((person: Person, index: number) => (
               <Card
                 key={person.name}
@@ -78,16 +78,16 @@ const Response: React.FC = () => {
                 id={`${Number(page) > 0 ? (Number(page) - 1) * itemInPage + index + 1 : index + 1}`}
               />
             ))}
-            <div className="wrapper_pagination">
+            <div className={style.wrapper_pagination}>
               <button
-                className="btn_pagination"
+                className={style.btn_pagination}
                 onClick={clickprev}
                 disabled={Number(page) <= 1}
               >
                 prev
               </button>
               <button
-                className="btn_pagination"
+                className={style.btn_pagination}
                 onClick={clicknext}
                 disabled={Number(page) >= totalPages}
               >
@@ -98,14 +98,14 @@ const Response: React.FC = () => {
         </div>
       )}
 
-      <button className="error_btn" onClick={clickError}>
+      <button className={style.error_btn} onClick={clickError}>
         Error button
       </button>
       <div
-        className={`checked_items ${checkedId.length > 0 ? 'visible' : ''} ${theme === 'white' ? '' : 'black'}`}
+        className={`${style.checked_items} ${checkedId.length > 0 ? style.visible : ''} ${theme === 'white' ? '' : 'black'}`}
       >
         <p>{checkedId.length} items are selected</p>
-        <div className="wrapper_btn">
+        <div className={style.wrapper_btn}>
           <button onClick={deletBtn}>Unselect all</button>
           <button onClick={download}>Download</button>
         </div>

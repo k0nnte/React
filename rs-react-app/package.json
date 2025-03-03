@@ -4,14 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "next build && next start",
+    "build": "next build",
     "lint": "eslint .",
     "preview": "vite preview",
     "prepare": "cd .. &&  husky rs-react-app/.husky",
     "format:fix": "prettier --write .",
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "dev": "next dev --turbopack"
+    "dev": "next dev --turbopack",
+    "start": "next start"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.1",

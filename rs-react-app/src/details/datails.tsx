@@ -1,12 +1,12 @@
 'use client';
 import React from 'react';
 import load from '../../src/assets/load.gif';
-import './details.css';
+import style from './details.module.css';
 import { useFetchPeopleQuery } from '../other/fetchData';
 import { useTheme } from '../other/context/useTheme';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import NotFound from '@/pages/404';
+import NotFound from '../../pages/404';
 
 const Details: React.FC = () => {
   const navigate = useRouter();
@@ -31,7 +31,7 @@ const Details: React.FC = () => {
     <>
       {isFetching ? (
         <Image
-          className="loadtwo"
+          className={style.loadtwo}
           src={load}
           alt="Loading..."
           width={500}
@@ -42,7 +42,9 @@ const Details: React.FC = () => {
       ) : (
         <div
           data-testid="div_test"
-          className={theme === 'white' ? 'details' : 'details black'}
+          className={
+            theme === 'white' ? style.details : `${style.details} black`
+          }
         >
           <p>name {data?.name}</p>
           <p>birth_year {data?.birth_year}</p>
@@ -52,7 +54,7 @@ const Details: React.FC = () => {
           <p>Skin color: {data?.skin_color}</p>
           <p>Skin eye: {data?.eye_color}</p>
 
-          <button className="btn_close" onClick={click}>
+          <button className={style.btn_close} onClick={click}>
             close
           </button>
         </div>

@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { ICard } from '../../other/interfases';
-import './card.css';
+import style from './card.module.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { add, deleteItem } from '../../redux/checkSave';
 import { RootState } from '../../redux/store';
@@ -42,11 +42,11 @@ const Card: React.FC<ICard> = (props) => {
   return (
     <div
       data-testid="card_test"
-      className={theme === 'white' ? 'card' : 'card black'}
+      className={theme === 'white' ? style.card : `${style.card} black`}
       onClick={click}
     >
-      <p className="item">{props.name}</p>
-      <div className="description">
+      <p className={style.item}>{props.name}</p>
+      <div className={style.description}>
         <p>Height: {props.height}</p>
         <p>Mass: {props.mass}</p>
         <p>Hair color: {props.hair_color}</p>
@@ -57,6 +57,7 @@ const Card: React.FC<ICard> = (props) => {
         onClick={(e) => e.stopPropagation()}
         onChange={clickCheck}
         checked={checkId.some((id) => id.id === props.id)}
+        className={style.ckeckBox}
       />
     </div>
   );

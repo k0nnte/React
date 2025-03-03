@@ -3,7 +3,6 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { ThemeProvider } from '../other/context/theme';
 import Top from './top';
 import { useTheme } from '../other/context/useTheme';
-import { useRouter } from 'next/navigation';
 
 const dispatch = vi.fn();
 
@@ -22,25 +21,26 @@ vi.mock(import('../other/localhook'), async (importOriginal) => {
     useLocalStorage: vi.fn().mockReturnValue(['', () => dataMock]),
   };
 });
-vi.mock('next/navigation', () => ({
-  useRouter: vi.fn((): { push: (path: string) => void } => ({
-    push: vi.fn(),
+// vi.mock('next/navigation', () => ({
+//   useRouter: vi.fn((): { push: (path: string) => void } => ({
+//     push: vi.fn(),
+//   })),
+//   useSearchParams: vi.fn(),
+//   useParams: vi.fn(),
+// }));
+
+const mockpush = vi.fn();
+vi.mock('next/router', () => ({
+  useRouter: vi.fn(() => ({
+    query: { page: '1' },
+    push: mockpush,
+    pathname: '/',
+    isReady: true,
   })),
-  useSearchParams: vi.fn(),
-  useParams: vi.fn(),
 }));
 
 describe('test top', () => {
   test('test click btn no text', () => {
-    const mockPush = vi.fn();
-    vi.mocked(useRouter).mockReturnValue({
-      push: mockPush,
-      back: vi.fn(),
-      forward: vi.fn(),
-      refresh: vi.fn(),
-      replace: vi.fn(),
-      prefetch: vi.fn(),
-    });
     render(
       <ThemeProvider>
         <Top />
@@ -48,20 +48,11 @@ describe('test top', () => {
     );
     const button = screen.getByText('Search');
     fireEvent.click(button);
-    expect(mockPush).not.toHaveBeenCalled();
+    expect(mockpush).not.toHaveBeenCalled();
     expect(dispatch).not.toHaveBeenCalled();
     expect(dataMock).not.toHaveBeenCalled();
   });
   test('test click btn', () => {
-    const mockPush = vi.fn();
-    vi.mocked(useRouter).mockReturnValue({
-      push: mockPush,
-      back: vi.fn(),
-      forward: vi.fn(),
-      refresh: vi.fn(),
-      replace: vi.fn(),
-      prefetch: vi.fn(),
-    });
     render(
       <ThemeProvider>
         <Top />
@@ -71,7 +62,7 @@ describe('test top', () => {
     fireEvent.change(input, { target: { value: 'new search text' } });
     const button = screen.getByText('Search');
     fireEvent.click(button);
-    expect(mockPush).toHaveBeenCalled();
+    expect(mockpush).toHaveBeenCalled();
     expect(dispatch).toHaveBeenCalled();
   });
   test('toggle theme white', () => {

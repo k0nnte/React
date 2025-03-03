@@ -1,6 +1,6 @@
 'use client';
 import React, { createRef } from 'react';
-import './top.css';
+import style from './top.module.css';
 import { useDispatch } from 'react-redux';
 import { setSearch } from '../redux/searchSave';
 import useLocalStorage from '../other/localhook';
@@ -31,21 +31,31 @@ const Top: React.FC = () => {
 
   return (
     <div
-      className={theme === 'white' ? 'search_vrapper' : 'search_vrapper black'}
+      className={
+        theme === 'white'
+          ? style.search_vrapper
+          : `${style.search_vrapper} black`
+      }
     >
       <input
         type="text"
-        className="input_search"
+        className={style.input_search}
         defaultValue={data}
         ref={inputref}
       />
       <button
-        className={theme === 'white' ? 'btn_search' : 'btn_search black'}
+        className={
+          theme === 'white' ? style.btn_search : `${style.btn_search} black`
+        }
         onClick={click}
       >
         Search
       </button>
-      <select className="theme_select" value={theme} onChange={toggleTheme}>
+      <select
+        className={style.theme_select}
+        value={theme}
+        onChange={toggleTheme}
+      >
         <option value="white">white</option>
         <option value="dark">dark</option>
       </select>
