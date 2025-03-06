@@ -11,7 +11,7 @@ import { destroy } from '../redux/checkSave';
 import { saveAs } from 'file-saver';
 import { useTheme } from '../other/context/useTheme';
 import { useRouter } from 'next/router';
-import NotFound from '@/pages/404';
+import NotFound from '../../pages/404';
 interface S {
   data: IResponse | null;
   page: number;

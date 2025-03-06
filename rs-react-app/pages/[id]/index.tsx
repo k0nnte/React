@@ -20,6 +20,7 @@ const Page = ({ data, details, pages, search }: Pages) => {
 
 export default Page;
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function getServerSideProps(context: {
   params: { id: number };
   query: { deteils: Irez | null; search: string };

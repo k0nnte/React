@@ -1,8 +1,6 @@
 'use client';
 import React, { createRef } from 'react';
 import style from './top.module.css';
-// import { useDispatch } from 'react-redux';
-// import { setSearch } from '../redux/searchSave';
 import useLocalStorage from '../other/localhook';
 import { useTheme } from '../other/context/useTheme';
 import { useRouter } from 'next/router';
@@ -10,7 +8,6 @@ import { useRouter } from 'next/router';
 const Top: React.FC = () => {
   const [data, setData] = useLocalStorage('search', '');
   const inputref = createRef<HTMLInputElement>();
-  // const dispatch = useDispatch();
   const navigate = useRouter();
   const { theme, setTheme } = useTheme();
 

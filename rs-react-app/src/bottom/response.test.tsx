@@ -5,7 +5,6 @@ import { Provider } from 'react-redux';
 import { ThemeProvider } from '../other/context/theme';
 import { destroy } from '../redux/checkSave';
 import { configureStore } from '@reduxjs/toolkit';
-import { useFetchPeopleQuery } from '../other/rfetch';
 import '@testing-library/jest-dom';
 
 const dispatch = vi.fn();
@@ -17,27 +16,102 @@ vi.mock('react-redux', async () => {
     useDispatch: () => dispatch,
   };
 });
-
-vi.mock(import('../other/rfetch'), async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    useFetchPeopleQuery: vi.fn(),
-  };
-});
 const mockpush = vi.fn();
 vi.mock('next/router', () => ({
   useRouter: vi.fn(() => ({
-    query: { page: '1' },
+    query: { page: '1', deteils: '' },
     push: mockpush,
-    pathname: '/',
-    isReady: true,
   })),
 }));
 
 vi.mock('file-saver', () => ({
   saveAs: () => saveas,
 }));
+
+const mockData = {
+  count: 11,
+  next: null,
+  previous: null,
+  results: [
+    {
+      name: 'Luke Skywalker',
+      height: '172',
+      mass: '77',
+      hair_color: 'blond',
+      skin_color: 'fair',
+    },
+    {
+      name: 'Darth Vader',
+      height: '202',
+      mass: '136',
+      hair_color: 'none',
+      skin_color: 'white',
+    },
+    {
+      name: 'Darth Vader',
+      height: '202',
+      mass: '136',
+      hair_color: 'none',
+      skin_color: 'white',
+    },
+    {
+      name: 'Darth Vader',
+      height: '202',
+      mass: '136',
+      hair_color: 'none',
+      skin_color: 'white',
+    },
+    {
+      name: 'Darth Vader',
+      height: '202',
+      mass: '136',
+      hair_color: 'none',
+      skin_color: 'white',
+    },
+    {
+      name: 'Darth Vader',
+      height: '202',
+      mass: '136',
+      hair_color: 'none',
+      skin_color: 'white',
+    },
+    {
+      name: 'Darth Vader',
+      height: '202',
+      mass: '136',
+      hair_color: 'none',
+      skin_color: 'white',
+    },
+    {
+      name: 'Darth Vader',
+      height: '202',
+      mass: '136',
+      hair_color: 'none',
+      skin_color: 'white',
+    },
+    {
+      name: 'Darth Vader',
+      height: '202',
+      mass: '136',
+      hair_color: 'none',
+      skin_color: 'white',
+    },
+    {
+      name: 'Darth Vader',
+      height: '202',
+      mass: '136',
+      hair_color: 'none',
+      skin_color: 'white',
+    },
+    {
+      name: 'Darth Vader',
+      height: '202',
+      mass: '136',
+      hair_color: 'none',
+      skin_color: 'white',
+    },
+  ],
+};
 
 describe('test response', () => {
   beforeEach(() => {
@@ -54,16 +128,10 @@ describe('test response', () => {
         }
       ) => state,
     });
-    const mockuseFetchPeopleQuery = {
-      data: null,
-      isFetching: false,
-      refetch: vi.fn(),
-    };
-    vi.mocked(useFetchPeopleQuery).mockReturnValue(mockuseFetchPeopleQuery);
     render(
       <Provider store={mockStore}>
         <ThemeProvider>
-          <Response />
+          <Response data={mockData} page={1} search="" />
         </ThemeProvider>
       </Provider>
     );
@@ -82,16 +150,11 @@ describe('test response', () => {
         }
       ) => state,
     });
-    const mockuseFetchPeopleQuery = {
-      data: null,
-      isFetching: false,
-      refetch: vi.fn(),
-    };
-    vi.mocked(useFetchPeopleQuery).mockReturnValue(mockuseFetchPeopleQuery);
+
     render(
       <Provider store={mockStore}>
         <ThemeProvider>
-          <Response />
+          <Response data={mockData} page={1} search="" />
         </ThemeProvider>
       </Provider>
     );
@@ -111,16 +174,10 @@ describe('test response', () => {
         }
       ) => state,
     });
-    const mockuseFetchPeopleQuery = {
-      data: null,
-      isFetching: false,
-      refetch: vi.fn(),
-    };
-    vi.mocked(useFetchPeopleQuery).mockReturnValue(mockuseFetchPeopleQuery);
     render(
       <Provider store={mockStore}>
         <ThemeProvider>
-          <Response />
+          <Response data={mockData} page={1} search="" />
         </ThemeProvider>
       </Provider>
     );
@@ -129,21 +186,6 @@ describe('test response', () => {
     expect(saveas).not.toHaveBeenCalled();
   });
   test('click next', () => {
-    const result = [
-      { id: 1, name: 'Test Person' },
-      { id: 2, name: 'Test Person' },
-      { id: 1, name: 'Test Person' },
-      { id: 3, name: 'Test Person' },
-      { id: 4, name: 'Test Person' },
-      { id: 5, name: 'Test Person' },
-      { id: 6, name: 'Test Person' },
-      { id: 7, name: 'Test Person' },
-      { id: 8, name: 'Test Person' },
-      { id: 9, name: 'Test Person' },
-      { id: 10, name: 'Test Person' },
-      { id: 11, name: 'Test Person' },
-    ];
-
     const mockStore = configureStore({
       reducer: (
         state = {
@@ -156,18 +198,10 @@ describe('test response', () => {
         }
       ) => state,
     });
-    const mockuseFetchPeopleQuery = {
-      data: {
-        results: result,
-      },
-      isFetching: false,
-      refetch: vi.fn(),
-    };
-    vi.mocked(useFetchPeopleQuery).mockReturnValue(mockuseFetchPeopleQuery);
     render(
       <Provider store={mockStore}>
         <ThemeProvider>
-          <Response />
+          <Response data={mockData} page={1} search="" />
         </ThemeProvider>
       </Provider>
     );
@@ -187,25 +221,23 @@ describe('test response', () => {
         }
       ) => state,
     });
-    const mockuseFetchPeopleQuery = {
-      data: {
-        results: [],
-      },
-      isFetching: false,
-      refetch: vi.fn(),
-    };
-    vi.mocked(useFetchPeopleQuery).mockReturnValue(mockuseFetchPeopleQuery);
 
+    const mocknulldata = {
+      count: 0,
+      next: null,
+      previous: null,
+      results: [],
+    };
     render(
       <Provider store={mockStore}>
         <ThemeProvider>
-          <Response />
+          <Response data={mocknulldata} page={1} search="" />
         </ThemeProvider>
       </Provider>
     );
     expect(screen.getByText('Not Found')).toBeInTheDocument();
   });
-  test('error response', () => {
+  test('click prev', () => {
     const mockStore = configureStore({
       reducer: (
         state = {
@@ -218,26 +250,18 @@ describe('test response', () => {
         }
       ) => state,
     });
-    const mockuseFetchPeopleQuery = {
-      data: {
-        results: [],
-      },
-      isFetching: false,
-      error: 'oops',
-      refetch: vi.fn(),
-    };
-    vi.mocked(useFetchPeopleQuery).mockReturnValue(mockuseFetchPeopleQuery);
-
     render(
       <Provider store={mockStore}>
         <ThemeProvider>
-          <Response />
+          <Response data={mockData} page={2} search="" />
         </ThemeProvider>
       </Provider>
     );
-    expect(screen.getByText('Error: oops')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('prev'));
+    expect(mockpush).toBeCalled();
   });
-  test('Loading', () => {
+  test('test error', () => {
+    const mockError = null;
     const mockStore = configureStore({
       reducer: (
         state = {
@@ -250,22 +274,13 @@ describe('test response', () => {
         }
       ) => state,
     });
-    const mockuseFetchPeopleQuery = {
-      data: {
-        results: [],
-      },
-      isFetching: true,
-      refetch: vi.fn(),
-    };
-    vi.mocked(useFetchPeopleQuery).mockReturnValue(mockuseFetchPeopleQuery);
-
     render(
       <Provider store={mockStore}>
         <ThemeProvider>
-          <Response />
+          <Response data={mockError} page={1} search="" />
         </ThemeProvider>
       </Provider>
     );
-    expect(screen.getByAltText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText('404 Page Not Found')).toBeInTheDocument();
   });
 });

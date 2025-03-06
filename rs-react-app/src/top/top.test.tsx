@@ -10,9 +10,6 @@ vi.mock('../other/context/useTheme', () => ({
   useTheme: vi.fn().mockReturnValue({ theme: 'white', setTheme: vi.fn() }),
 }));
 
-vi.mock('react-redux', () => ({
-  useDispatch: () => dispatch,
-}));
 const dataMock = vi.fn();
 vi.mock(import('../other/localhook'), async (importOriginal) => {
   const actual = await importOriginal();
@@ -21,13 +18,6 @@ vi.mock(import('../other/localhook'), async (importOriginal) => {
     useLocalStorage: vi.fn().mockReturnValue(['', () => dataMock]),
   };
 });
-// vi.mock('next/navigation', () => ({
-//   useRouter: vi.fn((): { push: (path: string) => void } => ({
-//     push: vi.fn(),
-//   })),
-//   useSearchParams: vi.fn(),
-//   useParams: vi.fn(),
-// }));
 
 const mockpush = vi.fn();
 vi.mock('next/router', () => ({
@@ -63,7 +53,6 @@ describe('test top', () => {
     const button = screen.getByText('Search');
     fireEvent.click(button);
     expect(mockpush).toHaveBeenCalled();
-    expect(dispatch).toHaveBeenCalled();
   });
   test('toggle theme white', () => {
     const mocksetTheme = vi.fn();
