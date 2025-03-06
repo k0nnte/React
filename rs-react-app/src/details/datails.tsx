@@ -7,24 +7,25 @@ import { Irez } from './../other/interfases';
 import NotFound from '@/pages/404';
 
 interface FetchPersonProps {
-  data: Irez | null;
-  error: boolean;
-  page: string;
+  data: Irez;
+  page: number;
+  search: string;
 }
 
-const Details: React.FC<FetchPersonProps> = ({ data, error, page }) => {
+const Details: React.FC<FetchPersonProps> = ({ data, page, search }) => {
   const navigate = useRouter();
   const { theme } = useTheme();
+  console.log(data);
 
   const click = () => {
     if (page) {
-      navigate.push(`/?page=${page}`);
+      navigate.push(`/${page}?search=${search}`);
     } else {
-      navigate.push('/?');
+      navigate.push(`/?search=${search}`);
     }
   };
 
-  if (error) {
+  if ('detail' in data && data.detail === 'Not found') {
     return <NotFound />;
   }
 

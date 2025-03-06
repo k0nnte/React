@@ -1,34 +1,34 @@
 'use client';
 import React, { useState } from 'react';
-import { useFetchPeopleQuery } from '../other/rfetch';
-import { Person } from '../other/interfases';
+
+import { IResponse, Person } from '../other/interfases';
 import Card from './card/card';
 import style from './response.module.css';
-import Loading from '../other/Loading/Loading';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { destroy } from '../redux/checkSave';
 import { saveAs } from 'file-saver';
 import { useTheme } from '../other/context/useTheme';
 import { useRouter } from 'next/router';
+import NotFound from '@/pages/404';
+interface S {
+  data: IResponse | null;
+  page: number;
+  search: string;
+}
 
-const Response: React.FC = () => {
+const Response: React.FC<S> = ({ data, page, search }) => {
   const itemInPage = 10;
-  const search = useSelector((state: RootState) => state.searchSave.search);
   const checkedId = useSelector((state: RootState) => state.checkSave.person);
   const dispatch = useDispatch();
   const [errorband, setErrorband] = useState(false);
   const navigate = useRouter();
-  const searchParams = navigate.query.page;
   const { theme } = useTheme();
-
-  const page = Number(searchParams || '1');
 
   const clickError = () => {
     setErrorband(true);
   };
-
-  const { data, error, isFetching } = useFetchPeopleQuery({ search, page });
 
   const deletBtn = () => {
     dispatch(destroy());
@@ -41,11 +41,11 @@ const Response: React.FC = () => {
   };
 
   const clickprev = () => {
-    navigate.push(`/?page=${Number(page) - 1}`);
+    navigate.push(`/${Number(page) - 1}?search=${search}`);
   };
 
   const clicknext = () => {
-    navigate.push(`/?page=${Number(page) + 1}`);
+    navigate.push(`/${Number(page) + 1}?search=${search}`);
   };
 
   const totalPages = data ? Math.ceil(data.count / itemInPage) : 0;
@@ -53,18 +53,13 @@ const Response: React.FC = () => {
   if (errorband) {
     throw new Error('Error');
   }
+  if (!data || !data.results) {
+    return <NotFound />;
+  }
 
   return (
     <div className={style.response_wrapper}>
-      {error ? (
-        <div className={style.response_other}>
-          <p>Error: {error.toString()}</p>
-        </div>
-      ) : isFetching ? (
-        <div className={style.response_other}>
-          <Loading />
-        </div>
-      ) : data?.results.length === 0 ? (
+      {data?.results.length === 0 ? (
         <div>
           <p>Not Found</p>
         </div>

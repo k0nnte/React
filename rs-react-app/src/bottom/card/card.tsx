@@ -10,23 +10,25 @@ import { useRouter } from 'next/router';
 
 const Card: React.FC<ICard> = (props) => {
   const navigate = useRouter();
-  const searchParams = navigate.query.page;
+  const id = navigate.query.deteils;
+
   const dispatch = useDispatch();
   const checkId = useSelector((state: RootState) => state.checkSave.person);
   const { theme } = useTheme();
-  const { id } = navigate.query;
+  const { page } = navigate.query;
+  const search = navigate.query.search || '';
   const click = () => {
-    if (props.id !== undefined && id === undefined) {
-      if (searchParams) {
-        navigate.push(`/${props.id}/?page=${searchParams}`);
+    if ((props.id !== undefined && id === undefined) || id === '') {
+      if (page) {
+        navigate.push(`/${page}/?search=${search}&deteils=${props.id}`);
       } else {
-        navigate.push(`/${props.id}/?`);
+        navigate.push(`/${1}?search=${search}&deteils=${props.id}`);
       }
     } else {
-      if (searchParams) {
-        navigate.push(`/?page=${searchParams}`);
+      if (page) {
+        navigate.push(`/${page}?search=${search}`);
       } else {
-        navigate.push(`/?`);
+        navigate.push(`/${1}?search=${search}`);
       }
     }
   };

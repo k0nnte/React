@@ -1,7 +1,6 @@
 import React from 'react';
 import style from './App.module.css';
 import Top from './top/top';
-import Response from './bottom/response';
 import { useTheme } from './other/context/useTheme';
 
 interface AppProps {
@@ -17,10 +16,7 @@ const App: React.FC<AppProps> = ({ children }) => {
         <div className={style.top}>
           <Top />
         </div>
-        <div className={style.bottom}>
-          <Response />
-          {children}
-        </div>
+        <div className={style.bottom}>{children}</div>
       </div>
     </main>
   );
