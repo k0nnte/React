@@ -15,7 +15,6 @@ interface FetchPersonProps {
 const Details: React.FC<FetchPersonProps> = ({ data, page, search }) => {
   const navigate = useRouter();
   const { theme } = useTheme();
-  console.log(data);
 
   const click = () => {
     if (page) {

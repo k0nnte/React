@@ -30,12 +30,19 @@ export async function getServerSideProps(context: {
   const res = await fetch(
     `https://swapi.dev/api/people/?search=${search || ''}&page=${pages || `1`}`
   );
+
+  if (!res.ok) {
+    return { props: {} };
+  }
   const data = await res.json();
 
   let detailsData = null;
 
   if (deteils) {
     const detailsRes = await fetch(`https://swapi.dev/api/people/${deteils}/`);
+    if (!detailsRes.ok) {
+      return { props: {} };
+    }
     detailsData = await detailsRes.json();
   }
 
