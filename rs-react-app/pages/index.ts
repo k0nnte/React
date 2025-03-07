@@ -1,10 +1,7 @@
-const Main = () => {
-  return null;
-};
+import Main from './../src/other/main';
 
 export default Main;
 
-// eslint-disable-next-line react-refresh/only-export-components
 export async function getServerSideProps(context: {
   query: { search?: string; deteils?: string };
 }) {

@@ -1,26 +1,8 @@
-import Response from '@/src/bottom/response';
-import Details from '@/src/details/datails';
-import { IResponse, Irez } from '@/src/other/interfases';
-
-interface Pages {
-  data: IResponse | null;
-  details: Irez | null;
-  pages: number;
-  search: string;
-}
-
-const Page = ({ data, details, pages, search }: Pages) => {
-  return (
-    <>
-      <Response data={data} page={pages} search={search} />
-      {details && <Details data={details} page={pages} search={search} />}
-    </>
-  );
-};
+import { Irez } from '@/src/other/interfases';
+import Page from '@/src/other/page';
 
 export default Page;
 
-// eslint-disable-next-line react-refresh/only-export-components
 export async function getServerSideProps(context: {
   params: { id: number };
   query: { deteils: Irez | null; search: string };
