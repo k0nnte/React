@@ -1,15 +1,21 @@
 'use client';
-import React, { createRef } from 'react';
+import React, { createRef, useEffect } from 'react';
 import style from './top.module.css';
 import useLocalStorage from '../other/localhook';
 import { useTheme } from '../other/context/useTheme';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 const Top: React.FC = () => {
   const [data, setData] = useLocalStorage('search', '');
   const inputref = createRef<HTMLInputElement>();
   const navigate = useRouter();
   const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    if (data !== '') {
+      navigate.push(`/?search=${data}`);
+    }
+  }, [data, navigate]);
 
   const click = () => {
     if (inputref.current) {

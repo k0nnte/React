@@ -10,8 +10,8 @@ import { RootState } from '../redux/store';
 import { destroy } from '../redux/checkSave';
 import { saveAs } from 'file-saver';
 import { useTheme } from '../other/context/useTheme';
-import { useRouter } from 'next/router';
-import NotFound from '../../pages/404';
+import NotFound from '../../app/not-found';
+import Link from 'next/link';
 interface S {
   data: IResponse | null;
   page: number;
@@ -23,7 +23,6 @@ const Response: React.FC<S> = ({ data, page, search }) => {
   const checkedId = useSelector((state: RootState) => state.checkSave.person);
   const dispatch = useDispatch();
   const [errorband, setErrorband] = useState(false);
-  const navigate = useRouter();
   const { theme } = useTheme();
 
   const clickError = () => {
@@ -38,14 +37,6 @@ const Response: React.FC<S> = ({ data, page, search }) => {
     const strData = JSON.stringify(checkedId, null, 2);
     const blob = new Blob([strData], { type: 'application/json' });
     saveAs(blob, `${checkedId.length}_peoples.csv`);
-  };
-
-  const clickprev = () => {
-    navigate.push(`/${Number(page) - 1}?search=${search}`);
-  };
-
-  const clicknext = () => {
-    navigate.push(`/${Number(page) + 1}?search=${search}`);
   };
 
   const totalPages = data ? Math.ceil(data.count / itemInPage) : 0;
@@ -74,20 +65,22 @@ const Response: React.FC<S> = ({ data, page, search }) => {
               />
             ))}
             <div className={style.wrapper_pagination}>
-              <button
-                className={style.btn_pagination}
-                onClick={clickprev}
-                disabled={Number(page) <= 1}
-              >
-                prev
-              </button>
-              <button
-                className={style.btn_pagination}
-                onClick={clicknext}
-                disabled={Number(page) >= totalPages}
-              >
-                next
-              </button>
+              <Link href={`/${Number(page) - 1}?search=${search}`}>
+                <button
+                  className={style.btn_pagination}
+                  disabled={Number(page) <= 1}
+                >
+                  prev
+                </button>
+              </Link>
+              <Link href={`/${Number(page) + 1}?search=${search}`}>
+                <button
+                  className={style.btn_pagination}
+                  disabled={Number(page) >= totalPages}
+                >
+                  next
+                </button>
+              </Link>
             </div>
           </div>
         </div>

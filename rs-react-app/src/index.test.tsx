@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import Main, { getServerSideProps } from '../pages/index';
+import Main, { getServerSideProps } from '../app/index';
 import { describe, test, expect } from 'vitest';
 
 describe('Main component', () => {

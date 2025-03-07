@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import NotFound from '../../../pages/404';
+import NotFound from '../../../app/not-found';
 
 describe('NotFound component', () => {
   test('renders the 404 message', () => {
