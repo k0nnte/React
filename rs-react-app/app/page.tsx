@@ -12,8 +12,6 @@ const Main = async ({ searchParams }: PageProps) => {
   const details = (await searchParams)?.deteils;
 
   redirect(`/1?search=${search || ''}&deteils=${details || ''}`);
-
-  // return null;
 };
 
 export default Main;

@@ -81,4 +81,16 @@ describe('test Details', () => {
     expect(screen.getByText('name Luke Skywalker')).toBeInTheDocument();
     expect(screen.getByText('birth_year 19BBY')).toBeInTheDocument();
   });
+  test('response info', () => {
+    const mockTheme = { theme: 'dark', setTheme: vi.fn() };
+    vi.mocked(useTheme).mockReturnValue(mockTheme);
+    render(
+      <Provider store={mockStore}>
+        <ThemeProvider>
+          <Details data={null} page={1} search={''} />
+        </ThemeProvider>
+      </Provider>
+    );
+    expect(screen.getByText('404 Page Not Found')).toBeInTheDocument();
+  });
 });

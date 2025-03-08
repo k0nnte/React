@@ -20,12 +20,13 @@ vi.mock(import('../other/localhook'), async (importOriginal) => {
 });
 
 const mockpush = vi.fn();
-vi.mock('next/router', () => ({
-  useRouter: vi.fn(() => ({
-    query: { page: '1' },
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn((): { push: (path: string) => void } => ({
     push: mockpush,
-    pathname: '/',
-    isReady: true,
+  })),
+  useSearchParams: vi.fn(),
+  useParams: vi.fn(() => ({
+    id: '1',
   })),
 }));
 

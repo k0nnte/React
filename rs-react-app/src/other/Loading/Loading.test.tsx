@@ -1,5 +1,5 @@
 import { describe, test, vi } from 'vitest';
-import Loading from './Loading';
+import Loading from '../../../app/loading';
 import { render } from '@testing-library/react';
 
 interface ImageProps {

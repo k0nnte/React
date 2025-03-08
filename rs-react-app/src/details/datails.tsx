@@ -7,7 +7,7 @@ import Link from 'next/link';
 import NotFound from '../../app/not-found';
 
 interface FetchPersonProps {
-  data: Irez;
+  data: Irez | null;
   page: number;
   search: string;
 }

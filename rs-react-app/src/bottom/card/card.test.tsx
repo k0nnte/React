@@ -7,7 +7,7 @@ import { ThemeProvider } from '../../other/context/theme';
 import { add, deleteItem } from '../../redux/checkSave';
 import { useTheme } from '../../other/context/useTheme';
 import '@testing-library/jest-dom';
-import { useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 
 const cardProps = {
   name: 'Luke Skywalker',
@@ -15,7 +15,7 @@ const cardProps = {
   mass: '77',
   hair_color: 'blond',
   skin_color: 'fair',
-  id: '1',
+  id: '2',
 };
 const mockDispatch = vi.fn();
 vi.mock('react-redux', async () => {
@@ -37,7 +37,7 @@ vi.mock('next/navigation', () => ({
   })),
   useSearchParams: vi.fn(),
   useParams: vi.fn(() => ({
-    id: '1',
+    id: '2',
   })),
 }));
 
@@ -45,33 +45,6 @@ describe('test Card', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
-  // test('test clickbtn', () => {
-  //   const mockTheme = { theme: 'white', setTheme: vi.fn() };
-  //   vi.mocked(useTheme).mockReturnValue(mockTheme);
-  // vi.mocked(useSearchParams).mockReturnValue({
-  //   get: vi.fn(),
-  //   append: vi.fn(),
-  //   delete: vi.fn(),
-  //   set: vi.fn(),
-  //   sort: vi.fn(),
-  //   size: 0,
-  //   getAll: vi.fn(),
-  //   has: vi.fn(),
-  //   forEach: vi.fn(),
-  //   entries: vi.fn(),
-  //   keys: vi.fn(),
-  //   values: vi.fn(),
-  //   [Symbol.iterator]: vi.fn(),
-  // });
-
-  //   render(
-  //     <Provider store={mockStore}>
-  //       <ThemeProvider>
-  //         <Card {...cardProps} />
-  //       </ThemeProvider>
-  //     </Provider>
-  //   );
-  // });
 
   test('checked', () => {
     const mockTheme = { theme: 'white', setTheme: vi.fn() };
@@ -128,5 +101,129 @@ describe('test Card', () => {
       </Provider>
     );
     expect(screen.getByTestId('card_test')).toHaveClass('black');
+  });
+
+  test('href witch deteils', () => {
+    const mockTheme = { theme: 'white', setTheme: vi.fn() };
+    vi.mocked(useTheme).mockReturnValue(mockTheme);
+    vi.mocked(useSearchParams).mockReturnValue({
+      get: (key: string) =>
+        key === 'search' ? 'test' : key === 'deteils' ? '2' : null,
+      append: vi.fn(),
+      delete: vi.fn(),
+      set: vi.fn(),
+      sort: vi.fn(),
+      size: 0,
+      getAll: vi.fn(),
+      has: vi.fn(),
+      forEach: vi.fn(),
+      entries: vi.fn(),
+      keys: vi.fn(),
+      values: vi.fn(),
+      [Symbol.iterator]: vi.fn(),
+    });
+    const { container } = render(
+      <Provider store={mockStore}>
+        <ThemeProvider>
+          <Card {...cardProps} />
+        </ThemeProvider>
+      </Provider>
+    );
+    const link = container.querySelector('a');
+    expect(link?.href).toContain('http://localhost:3000/2?search=test');
+  });
+  test('href without id', () => {
+    const mockTheme = { theme: 'white', setTheme: vi.fn() };
+    vi.mocked(useTheme).mockReturnValue(mockTheme);
+    vi.mocked(useSearchParams).mockReturnValue({
+      get: (key: string) =>
+        key === 'search' ? 'test' : key === 'deteils' ? '' : null,
+      append: vi.fn(),
+      delete: vi.fn(),
+      set: vi.fn(),
+      sort: vi.fn(),
+      size: 0,
+      getAll: vi.fn(),
+      has: vi.fn(),
+      forEach: vi.fn(),
+      entries: vi.fn(),
+      keys: vi.fn(),
+      values: vi.fn(),
+      [Symbol.iterator]: vi.fn(),
+    });
+    vi.mocked(useParams).mockReturnValue({});
+    const { container } = render(
+      <Provider store={mockStore}>
+        <ThemeProvider>
+          <Card {...cardProps} />
+        </ThemeProvider>
+      </Provider>
+    );
+    const link = container.querySelector('a');
+    expect(link?.href).toContain(
+      'http://localhost:3000/1?search=test&deteils=2'
+    );
+  });
+  test('href without deteils', () => {
+    const mockTheme = { theme: 'white', setTheme: vi.fn() };
+    vi.mocked(useTheme).mockReturnValue(mockTheme);
+    vi.mocked(useSearchParams).mockReturnValue({
+      get: (key: string) =>
+        key === 'search' ? 'test' : key === 'deteils' ? null : null,
+      append: vi.fn(),
+      delete: vi.fn(),
+      set: vi.fn(),
+      sort: vi.fn(),
+      size: 0,
+      getAll: vi.fn(),
+      has: vi.fn(),
+      forEach: vi.fn(),
+      entries: vi.fn(),
+      keys: vi.fn(),
+      values: vi.fn(),
+      [Symbol.iterator]: vi.fn(),
+    });
+    vi.mocked(useParams).mockReturnValue({ id: '1' });
+    const { container } = render(
+      <Provider store={mockStore}>
+        <ThemeProvider>
+          <Card {...cardProps} />
+        </ThemeProvider>
+      </Provider>
+    );
+    const link = container.querySelector('a');
+    expect(link?.href).toContain(
+      'http://localhost:3000/1?search=test&deteils=2'
+    );
+  });
+  test('href witch deteils without id', () => {
+    const mockTheme = { theme: 'white', setTheme: vi.fn() };
+    vi.mocked(useTheme).mockReturnValue(mockTheme);
+    vi.mocked(useSearchParams).mockReturnValue({
+      get: (key: string) =>
+        key === 'search' ? 'test' : key === 'deteils' ? '2' : null,
+      append: vi.fn(),
+      delete: vi.fn(),
+      set: vi.fn(),
+      sort: vi.fn(),
+      size: 0,
+      getAll: vi.fn(),
+      has: vi.fn(),
+      forEach: vi.fn(),
+      entries: vi.fn(),
+      keys: vi.fn(),
+      values: vi.fn(),
+      [Symbol.iterator]: vi.fn(),
+    });
+    vi.mocked(useParams).mockReturnValue({});
+    const { container } = render(
+      <Provider store={mockStore}>
+        <ThemeProvider>
+          <Card {...cardProps} />
+        </ThemeProvider>
+      </Provider>
+    );
+    const link = container.querySelector('a');
+    expect(link?.href).toContain('http://localhost:3000/1?search=test');
   });
 });
