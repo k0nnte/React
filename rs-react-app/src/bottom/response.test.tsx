@@ -18,12 +18,6 @@ vi.mock('react-redux', async () => {
   };
 });
 const mockpush = vi.fn();
-// vi.mock('next/router', () => ({
-//   useRouter: vi.fn(() => ({
-//     query: { page: '1', deteils: '' },
-//     push: mockpush,
-//   })),
-// }));
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn((): { push: (path: string) => void } => ({
     push: mockpush,
