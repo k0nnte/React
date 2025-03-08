@@ -6,6 +6,7 @@ import { ThemeProvider } from '../other/context/theme';
 import { destroy } from '../redux/checkSave';
 import { configureStore } from '@reduxjs/toolkit';
 import '@testing-library/jest-dom';
+import { useSearchParams } from 'next/navigation';
 
 const dispatch = vi.fn();
 const saveas = vi.fn();
@@ -17,10 +18,19 @@ vi.mock('react-redux', async () => {
   };
 });
 const mockpush = vi.fn();
-vi.mock('next/router', () => ({
-  useRouter: vi.fn(() => ({
-    query: { page: '1', deteils: '' },
+// vi.mock('next/router', () => ({
+//   useRouter: vi.fn(() => ({
+//     query: { page: '1', deteils: '' },
+//     push: mockpush,
+//   })),
+// }));
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn((): { push: (path: string) => void } => ({
     push: mockpush,
+  })),
+  useSearchParams: vi.fn(),
+  useParams: vi.fn(() => ({
+    id: '1',
   })),
 }));
 
@@ -113,6 +123,18 @@ const mockData = {
   ],
 };
 
+vi.mock('next/link', () => {
+  return {
+    default: ({
+      href,
+      children,
+    }: {
+      href: string;
+      children: React.ReactNode;
+    }) => <a href={href}>{children}</a>,
+  };
+});
+
 describe('test response', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -127,6 +149,21 @@ describe('test response', () => {
           },
         }
       ) => state,
+    });
+    vi.mocked(useSearchParams).mockReturnValue({
+      get: vi.fn(),
+      append: vi.fn(),
+      delete: vi.fn(),
+      set: vi.fn(),
+      sort: vi.fn(),
+      size: 0,
+      getAll: vi.fn(),
+      has: vi.fn(),
+      forEach: vi.fn(),
+      entries: vi.fn(),
+      keys: vi.fn(),
+      values: vi.fn(),
+      [Symbol.iterator]: vi.fn(),
     });
     render(
       <Provider store={mockStore}>
@@ -205,8 +242,10 @@ describe('test response', () => {
         </ThemeProvider>
       </Provider>
     );
-    fireEvent.click(screen.getByText('next'));
-    expect(mockpush).toBeCalled();
+    const nextButton = screen.getByText('next');
+
+    const linkElement = nextButton.closest('a');
+    expect(linkElement).toHaveAttribute('href', '/2?search=');
   });
   test('not found', () => {
     const mockStore = configureStore({
@@ -257,8 +296,10 @@ describe('test response', () => {
         </ThemeProvider>
       </Provider>
     );
-    fireEvent.click(screen.getByText('prev'));
-    expect(mockpush).toBeCalled();
+    const nextButton = screen.getByText('prev');
+
+    const linkElement = nextButton.closest('a');
+    expect(linkElement).toHaveAttribute('href', '/1?search=');
   });
   test('test error', () => {
     const mockError = null;
