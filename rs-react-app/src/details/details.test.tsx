@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import Details from './datails';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { ThemeProvider } from '../../src/other/context/theme';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
@@ -24,16 +24,17 @@ const mockData = {
   gender: 'male',
   eye_color: 'blue',
 };
-
-const mockpush = vi.fn();
-vi.mock('next/router', () => ({
-  useRouter: vi.fn(() => ({
-    query: { page: '1' },
-    push: mockpush,
-    pathname: '/',
-    isReady: true,
-  })),
-}));
+vi.mock('next/link', () => {
+  return {
+    default: ({
+      href,
+      children,
+    }: {
+      href: string;
+      children: React.ReactNode;
+    }) => <a href={href}>{children}</a>,
+  };
+});
 
 describe('test Details', () => {
   beforeEach(() => {
@@ -50,8 +51,9 @@ describe('test Details', () => {
         </ThemeProvider>
       </Provider>
     );
-    fireEvent.click(screen.getByText('close'));
-    expect(mockpush).toHaveBeenCalledWith('/1?search=');
+    const close = screen.getByText('close');
+    const linkElement = close.closest('a');
+    expect(linkElement).toHaveAttribute('href', '/1?search=');
   });
   test('class theme', () => {
     const mockTheme = { theme: 'dark', setTheme: vi.fn() };

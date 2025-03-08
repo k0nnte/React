@@ -4,7 +4,7 @@ import style from './details.module.css';
 import { useTheme } from '../other/context/useTheme';
 import { Irez } from './../other/interfases';
 import Link from 'next/link';
-import NotFound from '@/app/not-found';
+import NotFound from '../../app/not-found';
 
 interface FetchPersonProps {
   data: Irez;
