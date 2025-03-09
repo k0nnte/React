@@ -1,25 +1,29 @@
-import React, { createRef } from 'react';
-import './top.css';
-import { useDispatch } from 'react-redux';
-import { setSearch } from '../redux/searchSave';
+'use client';
+import React, { createRef, useEffect } from 'react';
+import style from './top.module.css';
 import useLocalStorage from '../other/localhook';
-import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../other/context/useTheme';
+import { useRouter } from 'next/navigation';
 
 const Top: React.FC = () => {
   const [data, setData] = useLocalStorage('search', '');
   const inputref = createRef<HTMLInputElement>();
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate = useRouter();
   const { theme, setTheme } = useTheme();
+
+  useEffect(() => {
+    if (data !== '') {
+      navigate.push(`/?search=${data}`);
+    }
+  }, [data, navigate]);
 
   const click = () => {
     if (inputref.current) {
       if (inputref.current.value.trim() === data) {
         return;
       }
-      navigate(`/`);
-      dispatch(setSearch(inputref.current.value.trim()));
+      navigate.push(`/?search=${inputref.current.value.trim()}`);
+
       setData(inputref.current.value.trim());
     }
   };
@@ -30,21 +34,31 @@ const Top: React.FC = () => {
 
   return (
     <div
-      className={theme === 'white' ? 'search_vrapper' : 'search_vrapper black'}
+      className={
+        theme === 'white'
+          ? style.search_vrapper
+          : `${style.search_vrapper} black`
+      }
     >
       <input
         type="text"
-        className="input_search"
+        className={style.input_search}
         defaultValue={data}
         ref={inputref}
       />
       <button
-        className={theme === 'white' ? 'btn_search' : 'btn_search black'}
+        className={
+          theme === 'white' ? style.btn_search : `${style.btn_search} black`
+        }
         onClick={click}
       >
         Search
       </button>
-      <select className="theme_select" value={theme} onChange={toggleTheme}>
+      <select
+        className={style.theme_select}
+        value={theme}
+        onChange={toggleTheme}
+      >
         <option value="white">white</option>
         <option value="dark">dark</option>
       </select>
