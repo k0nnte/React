@@ -1,0 +1,17 @@
+.top_wrapper{
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.wrapper_links{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.navigate{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

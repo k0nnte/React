@@ -5,5 +5,5 @@ export interface Iform {
   password1: string | null;
   password2: string | null;
   gender: string | null;
-  image: string | null;
+  image: Base64URLString | null;
 }
