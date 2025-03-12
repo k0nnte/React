@@ -1,5 +1,5 @@
-const Form = () => {
+const NForm = () => {
   return <></>;
 };
 
-export default Form;
+export default NForm;
