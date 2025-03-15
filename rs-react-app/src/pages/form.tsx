@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateForm } from '../redux/formOne';
 import { selectCountries } from '../redux/coutry';
 import * as yup from 'yup';
+import { useNavigate } from 'react-router-dom';
 
 const NForm = () => {
   const formRef = useRef<HTMLFormElement>(null);
@@ -17,6 +18,7 @@ const NForm = () => {
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const countries = useSelector(selectCountries);
   const [country, setCountry] = useState('');
+  const navigate = useNavigate();
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -32,6 +34,7 @@ const NForm = () => {
         setImageBase64(reader.result as string);
       };
       reader.readAsDataURL(file);
+      navigate('/');
     }
   };
 

@@ -39,13 +39,10 @@ const shema: yup.ObjectSchema<Iform> = yup.object().shape({
 
   coutry: yup.string().required('Поле обязательно для ввода'),
   image: yup
-    .mixed<File | string>()
+    .mixed<File>()
     .test('fileRequired', 'Загрузите изображение', (value) => {
-      if (value instanceof File) {
-        return value.size > 0;
-      }
+      return value !== undefined && value !== null;
     }),
-
   gender: yup
     .mixed<'male' | 'female'>()
     .required('Обязательное поле')
