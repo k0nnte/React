@@ -1,9 +1,11 @@
 export interface Iform {
-  name: string | null;
-  age: number | null;
-  email: string | null;
-  password1: string | null;
-  password2: string | null;
-  gender: string | null;
-  image: Base64URLString | null;
+  name: string;
+  age: number;
+  email: string;
+  password1: string;
+  password2: string;
+  coutry: string;
+  gender: 'male' | 'female';
+  image: File | null | string;
+  agree: boolean;
 }
