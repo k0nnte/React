@@ -34,7 +34,6 @@ const NForm = () => {
         setImageBase64(reader.result as string);
       };
       reader.readAsDataURL(file);
-      navigate('/');
     }
   };
 
@@ -61,6 +60,7 @@ const NForm = () => {
 
       setErrors({});
       dispatch(updateForm(data));
+      navigate('/');
     } catch (valerror) {
       const formErrors: Partial<Record<keyof Iform, string>> = {};
       (valerror as yup.ValidationError).inner.forEach((error) => {

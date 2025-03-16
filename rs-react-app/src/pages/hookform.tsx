@@ -14,7 +14,7 @@ const Hookform = () => {
     handleSubmit,
     trigger,
     setValue,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<Iform>({
     resolver: yupResolver(shema),
     mode: 'all',
@@ -134,7 +134,9 @@ const Hookform = () => {
           />
         </label>
 
-        <button type="submit">Отправить</button>
+        <button type="submit" disabled={!isValid}>
+          Отправить
+        </button>
       </form>
     </div>
   );
