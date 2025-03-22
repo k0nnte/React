@@ -32,7 +32,7 @@ function App() {
 
   useEffect(() => {
     request().then((resp: Icountry[]) => setcountry(resp));
-  });
+  }, []);
 
   return (
     <>
