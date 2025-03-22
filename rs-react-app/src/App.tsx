@@ -5,6 +5,7 @@ import Icountry from './interfase/interfase';
 import Card from './card/card';
 
 function App() {
+  console.log('Card component is rendering');
   const [country, setcountry] = useState<Icountry[] | null>(null);
   const [sel, setsel] = useState<string>('');
   const [order, setorder] = useState<'up' | 'down'>('up');
