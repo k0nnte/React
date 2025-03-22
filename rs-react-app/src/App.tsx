@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import './App.css';
 import request from './request/request';
 import Icountry from './interfase/interfase';
@@ -12,32 +12,53 @@ function App() {
     ...new Set(country?.map((item) => item.region).filter(Boolean)),
   ];
   const [search, setsearch] = useState<string>('');
-  let filter = country || [];
-  if (sel) {
-    filter = filter?.filter((item) => item.region === sel);
-  }
-  if (search) {
-    filter = filter?.filter((item) =>
+
+  const filteredCountre = useMemo(() => {
+    return country?.filter((item) => (sel ? item.region === sel : true)) || [];
+  }, [country, sel]);
+
+  const searchedCountre = useMemo(() => {
+    return filteredCountre.filter((item) =>
       item.name.official.toLowerCase().includes(search.toLowerCase())
     );
-  }
+  }, [filteredCountre, search]);
 
-  filter = filter.sort((a, b) => {
-    if (order === 'down') {
-      return (a.population || 0) - (b.population || 0);
-    } else {
-      return (b.population || 0) - (a.population || 0);
-    }
-  });
+  const sortedCountre = useMemo(() => {
+    return [...searchedCountre].sort((a, b) => {
+      if (order === 'down') {
+        return (a.population || 0) - (b.population || 0);
+      } else {
+        return (b.population || 0) - (a.population || 0);
+      }
+    });
+  }, [searchedCountre, order]);
 
   useEffect(() => {
     request().then((resp: Icountry[]) => setcountry(resp));
   }, []);
 
+  const handleSelectChange = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      setsel(event.target.value);
+    },
+    []
+  );
+
+  const handleSearchChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setsearch(event.target.value);
+    },
+    []
+  );
+
+  const handleSortOrder = useCallback((order: 'up' | 'down') => {
+    setorder(order);
+  }, []);
+
   return (
     <>
       <div className="header">
-        <select onChange={(event) => setsel(event.target.value)} value={sel}>
+        <select onChange={(event) => handleSelectChange(event)} value={sel}>
           <option value="">all region</option>
           {region?.map((reg) => (
             <option value={reg} key={reg}>
@@ -50,17 +71,17 @@ function App() {
           type="text"
           placeholder="search"
           value={search}
-          onChange={(event) => setsearch(event.target.value)}
+          onChange={(event) => handleSearchChange(event)}
         />
         <div className="wwrap_sort">
           <p>sort by population</p>
-          <button onClick={() => setorder('down')}>low</button>
-          <button onClick={() => setorder('up')}>up</button>
+          <button onClick={() => handleSortOrder('down')}>low</button>
+          <button onClick={() => handleSortOrder('up')}>up</button>
         </div>
       </div>
 
       <div className="wrap">
-        {filter?.map((item) => (
+        {sortedCountre?.map((item) => (
           <Card key={item.name.official} country={item} />
         ))}
       </div>

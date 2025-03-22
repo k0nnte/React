@@ -13,4 +13,4 @@ const Card: React.FC<{ country: Icountry }> = ({ country }) => {
   );
 };
 
-export default Card;
+export default React.memo(Card);
