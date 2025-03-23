@@ -3,9 +3,9 @@ import './App.css';
 import request from './request/request';
 import Icountry from './interfase/interfase';
 import Card from './card/card';
+import useLocalstorage from './lc/Uselocal';
 
 function App() {
-  console.log('Card component is rendering');
   const [country, setcountry] = useState<Icountry[] | null>(null);
   const [sel, setsel] = useState<string>('');
   const [order, setorder] = useState<'up' | 'down'>('up');
@@ -13,6 +13,7 @@ function App() {
     ...new Set(country?.map((item) => item.region).filter(Boolean)),
   ];
   const [search, setsearch] = useState<string>('');
+  const [vis, setvis] = useLocalstorage('visited', []);
 
   const filteredCountre = useMemo(() => {
     return country?.filter((item) => (sel ? item.region === sel : true)) || [];
@@ -51,6 +52,9 @@ function App() {
     },
     []
   );
+  const add = (name: string) => {
+    setvis(name);
+  };
 
   const handleSortOrder = useCallback((order: 'up' | 'down') => {
     setorder(order);
@@ -83,7 +87,12 @@ function App() {
 
       <div className="wrap">
         {sortedCountre?.map((item) => (
-          <Card key={item.name.official} country={item} />
+          <Card
+            key={item.name.official}
+            country={item}
+            visit={vis.includes(item.name.official)}
+            tVisit={add}
+          />
         ))}
       </div>
     </>
