@@ -1,0 +1,16 @@
+.wrapper_card{
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    border: 5px solid black;
+    padding: 10px;
+    cursor: pointer;
+
+}
+
+.visited{
+ 
+    border: 10px solid green;
+    border-radius: 5px;
+    cursor: not-allowed;
+}

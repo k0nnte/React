@@ -1,0 +1,16 @@
+.wrap{
+   display: flex; 
+   flex-wrap: wrap;
+   gap: 50px;
+   margin: 50px;
+}
+
+.header{
+   display: flex;
+   justify-content: space-around;
+}
+
+.wwrap_sort{
+   display: flex;
+   gap: 5px;
+}
